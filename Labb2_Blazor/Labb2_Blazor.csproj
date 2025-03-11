@@ -4,10 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+<UseWasm>true</UseWasm>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Labb2_API\Labb2_API.csproj" />
+    <ProjectReference Include="..\Labb2_Shared\Labb2_Shared.csproj" />
   </ItemGroup>
 
 </Project>

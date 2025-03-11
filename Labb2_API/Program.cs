@@ -4,6 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazor",
+        policy => policy.WithOrigins("http://localhost:5266/")
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
+
 builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
@@ -22,6 +30,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowBlazor");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

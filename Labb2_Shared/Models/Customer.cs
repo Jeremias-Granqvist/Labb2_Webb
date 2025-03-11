@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Labb2_API.Models;
+namespace Labb2_Shared.Models;
 
 public partial class Customer
 {

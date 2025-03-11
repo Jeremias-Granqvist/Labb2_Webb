@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35806.99 d17.13
+VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb2_API", "Labb2_API\Labb2_API.csproj", "{E120A95A-EA79-4945-B9F2-CB18449AD2A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb2_Blazor", "Labb2_Blazor\Labb2_Blazor.csproj", "{02A8B3E8-B940-425D-8CE5-76396285913F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb2_Shared", "Labb2_Shared\Labb2_Shared.csproj", "{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{02A8B3E8-B940-425D-8CE5-76396285913F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02A8B3E8-B940-425D-8CE5-76396285913F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02A8B3E8-B940-425D-8CE5-76396285913F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

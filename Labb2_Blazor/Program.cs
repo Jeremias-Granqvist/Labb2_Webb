@@ -1,8 +1,18 @@
 using Labb2_Blazor.Components;
-
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddHttpClient("Api", client =>
+{
+client.BaseAddress = new Uri("http://localhost:5266/");
+
+});
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

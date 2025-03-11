@@ -1,6 +1,8 @@
 ﻿using Labb2_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Labb2_Shared;
+using Labb2_Shared.Models;
 
 namespace Labb2_API.Controllers;
 [Route("api/[controller]")]
@@ -16,7 +18,7 @@ public class ProductController : ControllerBase
 
     //GET (hämta med API)
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+    public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
     {
         return await _context.Products.ToListAsync();
     }
@@ -34,12 +36,12 @@ public class ProductController : ControllerBase
 
     //POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<Product>> PostProduct(Product product)
+    public async Task<ActionResult<Product>> PostCustomer(Product product)
     {
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId }, product);
+        return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId}, product);
     }
 
     //PUT (uppdatera med API)

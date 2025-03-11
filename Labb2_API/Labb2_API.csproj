@@ -19,4 +19,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Labb2_Shared\Labb2_Shared.csproj" />
+  </ItemGroup>
+
 </Project>
