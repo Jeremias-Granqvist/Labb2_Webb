@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
 
 builder.Services.AddHttpClient("Api", client =>
 {
-client.BaseAddress = new Uri("http://localhost:5266/");
-
+    var BaseUrl = builder.Configuration["BaseUrl"];
+    client.BaseAddress = new Uri(BaseUrl); 
 });
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
