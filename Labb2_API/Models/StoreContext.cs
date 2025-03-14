@@ -10,11 +10,9 @@ public partial class StoreContext : DbContext
     public StoreContext()
     {
     }
-    private readonly IConfiguration _configuration;
-    public StoreContext(DbContextOptions<StoreContext> options, IConfiguration configuration)
+    public StoreContext(DbContextOptions<StoreContext> options)
         : base(options)
     {
-        _configuration = configuration;
     }
 
     public virtual DbSet<Adress> Adresses { get; set; }
@@ -26,13 +24,13 @@ public partial class StoreContext : DbContext
     public virtual DbSet<Product> Products { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
+    {
         if (!optionsBuilder.IsConfigured)
         {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer("Server=localhost;Database=Jeremias Granqvist Labb2 Webb;TrustServerCertificate=true;IntegratedSecurity=true;");
+            base.OnConfiguring(optionsBuilder);
         }
-	}
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Adress>(entity =>
@@ -81,6 +79,20 @@ public partial class StoreContext : DbContext
                 .HasForeignKey(d => d.ProductCategoryId)
                 .HasConstraintName("FK_Produkter_Kategorier");
         }));
+
+        var testcategory = new Category { CategoryId = 1,
+            CategoryName = "test"
+        };
+        var testcustomer = new Product
+        {
+            ProductId = 1,
+            ProductName = "test",
+            Price = 599,
+            ProductCategory = testcategory,
+            ProductCategoryId = 1,
+            ProductDescription = "more test",
+            Status = "available"
+        };
 
         OnModelCreatingPartial(modelBuilder);
     }

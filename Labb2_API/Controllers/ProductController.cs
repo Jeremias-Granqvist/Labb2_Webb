@@ -5,14 +5,17 @@ using Labb2_Shared;
 using Labb2_Shared.Models;
 
 namespace Labb2_API.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
 {
+    private readonly ILogger<ProductController> _logger;
     private readonly StoreContext _context;
-    public ProductController(StoreContext context)
+    public ProductController(StoreContext context, ILogger<ProductController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
 
@@ -20,7 +23,18 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
     {
-        return await _context.Products.ToListAsync();
+        try
+        {
+            var products = await _context.Products
+                .Include(p => p.ProductCategory)
+                .ToListAsync();
+            return Ok(products);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError($"Error occurred: {ex.Message}");
+            return StatusCode(500, $"Internal server error:");
+        }
     }
 
     [HttpGet("{id}")]
