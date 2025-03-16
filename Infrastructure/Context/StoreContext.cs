@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Labb2_Shared;
 using Labb2_Shared.Models;
-namespace Labb2_API.Models;
+namespace Labb2_Infrastructure;
 
 public partial class StoreContext : DbContext
 {
@@ -27,7 +27,9 @@ public partial class StoreContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=Jeremias Granqvist Labb2 Webb;TrustServerCertificate=true;IntegratedSecurity=true;");
+
+            
+            //optionsBuilder.UseSqlServer("Server=localhost;Database=[Jeremias Granqvist Labb2 Webb];TrustServerCertificate=true;IntegratedSecurity=true;");
             base.OnConfiguring(optionsBuilder);
         }
     }

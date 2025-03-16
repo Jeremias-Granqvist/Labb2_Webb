@@ -1,5 +1,4 @@
-﻿using Labb2_API.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Labb2_Shared;
 using Labb2_Shared.Models;

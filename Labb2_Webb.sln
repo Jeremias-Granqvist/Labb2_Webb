@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb2_Blazor", "Labb2_Blazo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb2_Shared", "Labb2_Shared\Labb2_Shared.csproj", "{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb2_Infrastructure", "Infrastructure\Labb2_Infrastructure.csproj", "{A35B660A-540A-44EE-8BC4-49161DDD2B45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EA8F6B9-26BB-42F7-AD24-6EEF529E12BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A35B660A-540A-44EE-8BC4-49161DDD2B45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A35B660A-540A-44EE-8BC4-49161DDD2B45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A35B660A-540A-44EE-8BC4-49161DDD2B45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A35B660A-540A-44EE-8BC4-49161DDD2B45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

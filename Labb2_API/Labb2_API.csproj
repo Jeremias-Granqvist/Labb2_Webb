@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Labb2_Infrastructure.csproj" />
     <ProjectReference Include="..\Labb2_Shared\Labb2_Shared.csproj" />
   </ItemGroup>
 
