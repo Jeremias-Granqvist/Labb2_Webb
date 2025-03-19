@@ -75,7 +75,7 @@ public partial class StoreContext : DbContext
             entity.Property(e => e.ProductCategoryId).HasColumnName("ProductCategoryID");
             entity.Property((System.Linq.Expressions.Expression<Func<Product, string?>>)(e => e.ProductDescription)).HasMaxLength(50);
             entity.Property((System.Linq.Expressions.Expression<Func<Product, string?>>)(e => e.ProductName)).HasMaxLength(50);
-            entity.Property((System.Linq.Expressions.Expression<Func<Product, string?>>)(e => e.Status)).HasMaxLength(50);
+            entity.Property((System.Linq.Expressions.Expression<Func<Product, bool?>>)(e => e.Status));
 
             entity.HasOne(d => d.ProductCategory).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductCategoryId)
@@ -93,7 +93,7 @@ public partial class StoreContext : DbContext
             ProductCategory = testcategory,
             ProductCategoryId = 1,
             ProductDescription = "more test",
-            Status = "available"
+            Status = true
         };
 
         OnModelCreatingPartial(modelBuilder);

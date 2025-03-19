@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Labb2_Infrastructure.DTOExstension;
+using Labb2_Shared.Dtos;
+using Labb2_Shared.Interfaces;
+using Labb2_Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +10,43 @@ using System.Threading.Tasks;
 
 namespace Labb2_Infrastructure.Services
 {
-    class ProductService
+    public class ProductService : IProductService
     {
+        private readonly IRepository<Product> _repository;
+
+        public ProductService(IRepository<Product> repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<Product> CreateProductAsync(ProductDto productDto)
+        {
+            var product = productDto.ProductToEntity();
+
+            return await _repository.AddAsync(product);
+        }
+
+        public async Task<bool> DeleteProductAsync(int id)
+        {
+            return await _repository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<ProductDto>> GetProductsAsync()
+        {
+            return (await _repository.GetAllAsync()).ProductToDto();
+        }
+
+        public async Task<bool> UpdateProductAsync(int id, ProductUpdateDto productUpdateDto)
+        {
+            var productToUpdate = await _repository.GetByIdAsync(id);
+            if (productToUpdate == null)
+            {
+                return false;
+            }
+
+            productToUpdate.UpdateFromDTO(productUpdateDto);
+
+            return await _repository.UpdateAsync(productToUpdate);
+        }
     }
 }

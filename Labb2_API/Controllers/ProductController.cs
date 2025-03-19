@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Labb2_Shared;
 using Labb2_Shared.Models;
+using Labb2_Infrastructure;
+using Labb2_Shared.Interfaces;
+using Labb2_Shared.Dtos;
 
 namespace Labb2_API.Controllers;
 
@@ -9,12 +12,10 @@ namespace Labb2_API.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly ILogger<ProductController> _logger;
-    private readonly StoreContext _context;
-    public ProductController(StoreContext context, ILogger<ProductController> logger)
+    private readonly IProductService _productService;
+    public ProductController(IProductService productService)
     {
-        _context = context;
-        _logger = logger;
+        _productService = productService;
     }
 
 
@@ -22,84 +23,49 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
     {
-        try
-        {
-            var products = await _context.Products
-                .Include(p => p.ProductCategory)
-                .ToListAsync();
+        var products = await _productService.GetProductsAsync();
             return Ok(products);
-        }
-        catch(Exception ex)
-        {
-            _logger.LogError($"Error occurred: {ex.Message}");
-            return StatusCode(500, $"Internal server error:");
-        }
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
-    {
-        var product = await _context.Products.FindAsync(id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-        return product;
-    }
+    //[HttpGet("{id}")]
+    //public async Task<ActionResult<Product>> GetProduct(int id)
+    //{
+    //    return null;
+    //}
 
     //POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<Product>> PostCustomer(Product product)
+    public async Task<ActionResult<Product>> CreateProduct(ProductDto product)
     {
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId}, product);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var result = await _productService.CreateProductAsync(product);
+        return Created();
     }
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, Product product)
+    public async Task<IActionResult> PutProduct(int id, ProductUpdateDto product)
     {
-        if (id != product.ProductId)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(product).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Products.Any(e => e.ProductId == id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+        await _productService.UpdateProductAsync(id, product);
+        return Ok();
     }
 
     // DELETE (Ta bort med API)
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
-        var product = await _context.Products.FindAsync(id);
-        if (product == null)
+        var product = await _productService.DeleteProductAsync(id);
+        if (product == true)
+        {
+            return Ok();
+        }
+        else
         {
             return NotFound();
         }
 
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
     }
 }

@@ -6,15 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Labb2_Shared.Interfaces
+namespace Labb2_Shared.Interfaces;
+
+public interface IProductService
 {
-    interface IProductService
-    {
-        Task<Product> CreateProductAsync(ProductDto productDto);
-        Task<IEnumerable<ProductDto>> GetProductsAsync();
+    Task<Product> CreateProductAsync(ProductDto productDto);
+    Task<IEnumerable<ProductDto>> GetProductsAsync();
 
-        Task<bool> DeleteProductAsync(int id);
+    Task<bool> DeleteProductAsync(int id);
 
-        Task<bool> UpdateProductAsync(int id, ProductUpdateDto productUpdateDto);
-    }
+    Task<bool> UpdateProductAsync(int id, ProductUpdateDto productUpdateDto);
 }

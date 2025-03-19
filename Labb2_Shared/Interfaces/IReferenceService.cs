@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Labb2_Shared.Interfaces
+namespace Labb2_Shared.Interfaces;
+
+public interface IReferenceService
 {
-    interface IReferenceService
-    {
-        Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
-    }
+    Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
 }

@@ -1,0 +1,11 @@
+﻿@page "/addproduct"
+@rendermode InteractiveServer
+
+<PageTitle>Add Product</PageTitle>
+<h3>Add Product</h3>
+
+@if(!isProductSaved)
+{
+<EditForm EditContext="Product" OnSubmit="Submit" FormName="Product"> </EditForm>
+}
+

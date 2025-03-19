@@ -8,6 +8,6 @@
         public int Price { get; set; }
         public Category ProductCategory { get; set; }
         public int ProductCategoryId { get; set; }
-        public string Status { get; set; }
+        public bool Status { get; set; }
     }
 }
