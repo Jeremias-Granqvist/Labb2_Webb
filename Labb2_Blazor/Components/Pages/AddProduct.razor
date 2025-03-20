@@ -1,11 +1,28 @@
 ﻿@page "/addproduct"
 @rendermode InteractiveServer
+@using Labb2_Blazor.Dto;
 
 <PageTitle>Add Product</PageTitle>
 <h3>Add Product</h3>
 
+<EditForm Model="Product">
+
+	<div class="mx-5">
+		<label for="name" class="col-form-label col-md-3" >Product Name</label>
+		<div class="col-md-8">
+			<InputText id="productName" class="form-control col-md-8" @bind-Value="@Product.Name" placeholder="Enter Product name"></InputText>
+		</div>
+			@* <validationMessage class="offset-md-3" For="@(() => Product.Name)" /> *@
+		<div>
+			<InputText id="productDescription" class="form-control col-md-8" @bind-Value="@Product.Description" placeholder="Enter short description"></InputText>
+		</div>
+	</div>
+</EditForm>
+
+
 @if(!isProductSaved)
 {
-<EditForm EditContext="Product" OnSubmit="Submit" FormName="Product"> </EditForm>
+
+
 }
 
