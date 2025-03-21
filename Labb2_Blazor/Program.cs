@@ -18,7 +18,7 @@ builder.Services.AddSingleton<AppState>();
 
 builder.Services.AddHttpClient("Api", client =>
 {
-     client.BaseAddress = new Uri("https://localhost:5189");
+     client.BaseAddress = new Uri("https://localhost:7002");
     //var BaseUrl = builder.Configuration["BaseUrl"];
     //client.BaseAddress = new Uri(BaseUrl); 
 });
@@ -30,7 +30,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider; //    scope.ServiceProvider används för att hämta tjänster inom det nya scopet.
-    var appState = services.GetRequiredService<AppState>(); //services.GetRequiredService<AppState>() hämtar AppState-instansen från DI.
+     var appState = services.GetRequiredService<AppState>(); //services.GetRequiredService<AppState>() hämtar AppState-instansen från DI.
     var httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
     var httpClient = httpClientFactory.CreateClient("Api");
 

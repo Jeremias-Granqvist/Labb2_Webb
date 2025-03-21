@@ -36,7 +36,7 @@ namespace Labb2_Infrastructure.Services
             return (await _repository.GetAllAsync()).ProductToDto();
         }
 
-        public async Task<bool> UpdateProductAsync(int id, ProductUpdateDto productUpdateDto)
+        public async Task<bool> UpdateProductAsync(int id, ProductDto productDto)
         {
             var productToUpdate = await _repository.GetByIdAsync(id);
             if (productToUpdate == null)
@@ -44,7 +44,7 @@ namespace Labb2_Infrastructure.Services
                 return false;
             }
 
-            productToUpdate.UpdateFromDTO(productUpdateDto);
+            productToUpdate.UpdateFromDTO(productDto);
 
             return await _repository.UpdateAsync(productToUpdate);
         }

@@ -23,7 +23,7 @@ namespace Labb2_Infrastructure.DTOExstension
             return product;
         }
         
-        public static void UpdateFromDTO(this Product updated, ProductUpdateDto dto)
+        public static void UpdateFromDTO(this Product updated, ProductDto dto)
         {
             updated.ProductName = dto.Name;
             updated.ProductDescription = dto.Description;

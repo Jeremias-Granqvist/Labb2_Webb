@@ -27,15 +27,11 @@ public class ProductController : ControllerBase
             return Ok(products);
     }
 
-    //[HttpGet("{id}")]
-    //public async Task<ActionResult<Product>> GetProduct(int id)
-    //{
-    //    return null;
-    //}
+
 
     //POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct(ProductDto product)
+    public async Task<ActionResult<Product>> CreateProduct([FromBody]ProductDto product)
     {
         if (!ModelState.IsValid)
         {
@@ -47,9 +43,25 @@ public class ProductController : ControllerBase
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, ProductUpdateDto product)
+    public async Task<IActionResult> PutProduct(int id, [FromBody] ProductDto product)
     {
+        Console.WriteLine($"Received ID from URL: {id}");
+        Console.WriteLine($"Received Product ID from body: {product.Id}");
+
+        if (product == null)
+        {
+            return BadRequest("Product data is missing");
+        }
+
+        // Ensure that the product ID in the body is updated
+        if (product.Id != id)
+        {
+            return BadRequest("Product ID mismatch");
+        }
+
+        // Update the product
         await _productService.UpdateProductAsync(id, product);
+
         return Ok();
     }
 
@@ -66,6 +78,6 @@ public class ProductController : ControllerBase
         {
             return NotFound();
         }
-
+        
     }
 }

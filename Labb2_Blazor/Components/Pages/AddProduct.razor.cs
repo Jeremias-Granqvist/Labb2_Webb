@@ -1,6 +1,7 @@
 using Labb2_Blazor.Dto;
 using Labb2_Blazor.Models;
 using Labb2_Blazor.State;
+using Labb2_Shared.Dtos;
 using Microsoft.AspNetCore.Components;
 
 namespace Labb2_Blazor.Components.Pages
@@ -14,7 +15,7 @@ namespace Labb2_Blazor.Components.Pages
         public AppState appState { get; set; }
 
         [SupplyParameterFromForm]
-        private ProductDtoFrontend? Product { get; set; }
+        private ProductDto? Product { get; set; }
 
         public List<CategoryDtoFrontend> Categories { get; set; } = new();
 
@@ -27,7 +28,7 @@ namespace Labb2_Blazor.Components.Pages
         {
             _httpClient = HttpClientFactory.CreateClient("Api");
             isProductSaved = false;
-            Product ??= new ProductDtoFrontend();
+            Product ??= new ProductDto();
 
             try
             {
@@ -58,10 +59,13 @@ namespace Labb2_Blazor.Components.Pages
         
         private async Task ValidInput()
         {
-            var response = await _httpClient.PostAsJsonAsync("api/products", Product);
+            var response = await _httpClient.PostAsJsonAsync("api/product", Product);
+            if (response.IsSuccessStatusCode)
+            {
             statusClass = "alert-success";
             message = "Product added to database";
             isProductSaved = true;
+            }
         }
 
 

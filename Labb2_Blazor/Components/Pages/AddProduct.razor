@@ -5,16 +5,26 @@
 <PageTitle>Add Product</PageTitle>
 <h3>Add Product</h3>
 
-<EditForm Model="Product">
+<EditForm Model="Product"
+	OnInvalidSubmit="@InvalidInput"
+OnValidSubmit="@ValidInput">
+
 
 	<div class="Row mb-3">
-		<label for="name" class="col-form-label col-md-3" >Product Name</label>
+		@if (!string.IsNullOrEmpty(message))
+		{
+			<div class="@statusClass" role="alert">
+				@message
+			</div>
+		}
+
 		<div class="col-md-8">
+		<label for="name" class="col-form-label col-md-3" >Product Name</label>
 			<InputText id="productName" class="form-control col-md-3" @bind-Value="@Product.Name" placeholder="Enter Product name"></InputText>
 		</div>
-		<label for="name" class="col-form-label col-md-3">Product Description</label>
 
 		<div>
+		<label for="name" class="col-form-label col-md-3">Product Description</label>
 			<InputText id="productDescription" class="form-control col-md-3" @bind-Value="@Product.Description" placeholder="Enter short description"></InputText>
 		</div>
 
