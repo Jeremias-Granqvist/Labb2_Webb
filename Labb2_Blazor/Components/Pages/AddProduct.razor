@@ -7,14 +7,45 @@
 
 <EditForm Model="Product">
 
-	<div class="mx-5">
+	<div class="Row mb-3">
 		<label for="name" class="col-form-label col-md-3" >Product Name</label>
 		<div class="col-md-8">
-			<InputText id="productName" class="form-control col-md-8" @bind-Value="@Product.Name" placeholder="Enter Product name"></InputText>
+			<InputText id="productName" class="form-control col-md-3" @bind-Value="@Product.Name" placeholder="Enter Product name"></InputText>
 		</div>
-			@* <validationMessage class="offset-md-3" For="@(() => Product.Name)" /> *@
+		<label for="name" class="col-form-label col-md-3">Product Description</label>
+
 		<div>
-			<InputText id="productDescription" class="form-control col-md-8" @bind-Value="@Product.Description" placeholder="Enter short description"></InputText>
+			<InputText id="productDescription" class="form-control col-md-3" @bind-Value="@Product.Description" placeholder="Enter short description"></InputText>
+		</div>
+
+	<div class="row mb-3">
+		<label for="category" class="col-form-label col-md-3">Product category:</label>
+		<div class="col-md-3">
+			<InputSelect id="ProductCategories" class="form-control col-md-3" @bind-Value="@Product.CategoryId" placeholder="Enter product category">
+				@foreach (var category in Categories)
+				{
+					<option value="@category.Id">@category.Name</option>
+				}
+			</InputSelect>
+	</div>
+		<div class="row mb-3">
+			<label for="category" class="col-form-label col-md-3">Product price:</label>
+			<div class="col-md-8">
+				<InputNumber id="productPrice" class="form-control col-md-8" min="0" @bind-Value="@Product.Price"></InputNumber>
+			</div>
+			<ValidationMessage class="offset-md-3" For="@(() => Product.Price)" />
+		</div>
+			<div class="row mb-3">
+				<label for="price" class="col-form-label col-md-3">Product in stock:</label>
+				<div class="col-md-8">
+					<InputCheckbox id="productStatus" @bind-Value="@Product.Status"></InputCheckbox><span class="ms-2">If in stock checked</span>
+				</div>
+			</div>
+
+			<div>
+				<button type="submit" class="btn btn-outline-primary ms-1">Submit</button>
+			</div>
+
 		</div>
 	</div>
 </EditForm>

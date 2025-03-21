@@ -12,8 +12,8 @@ public class AppState
     {
         if (Categories.Count == 0)
         {
-            Categories = await http.GetFromJsonAsync<List<CategoryDtoFrontend>>("api/categories")
-                ?? new List<CategoryDtoFrontend>();
+            var FetchedCategories = await http.GetFromJsonAsync<List<CategoryDtoFrontend>>("api/categories");
+                Categories = FetchedCategories ?? new List<CategoryDtoFrontend>();
         }
     }
 }

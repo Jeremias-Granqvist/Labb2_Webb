@@ -18,8 +18,9 @@ builder.Services.AddSingleton<AppState>();
 
 builder.Services.AddHttpClient("Api", client =>
 {
-    var BaseUrl = builder.Configuration["BaseUrl"];
-    client.BaseAddress = new Uri(BaseUrl); 
+     client.BaseAddress = new Uri("https://localhost:5189");
+    //var BaseUrl = builder.Configuration["BaseUrl"];
+    //client.BaseAddress = new Uri(BaseUrl); 
 });
 
 
@@ -31,7 +32,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider; //    scope.ServiceProvider används för att hämta tjänster inom det nya scopet.
     var appState = services.GetRequiredService<AppState>(); //services.GetRequiredService<AppState>() hämtar AppState-instansen från DI.
     var httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
-    var httpClient = httpClientFactory.CreateClient("MyAPI");
+    var httpClient = httpClientFactory.CreateClient("Api");
 
     try
     {
@@ -57,7 +58,6 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

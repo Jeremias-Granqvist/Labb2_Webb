@@ -28,13 +28,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder.WithOrigins("https://localhost:5188")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 //builder.Services.AddCors(options =>
 //{
 //    options.AddPolicy(name: "frontend-only", configurePolicy: policy =>
 //    {
 //        policy.AllowAnyHeader();
 //        policy.AllowAnyMethod();
-//        policy.AllowCredentials();
 //        policy.AllowAnyOrigin();
 //    });
 //});
@@ -50,8 +60,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowFrontend");
 
 //app.UseCors("frontend-only");
+
 app.UseAuthorization();
 app.MapControllers();
 

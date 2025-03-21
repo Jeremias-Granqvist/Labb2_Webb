@@ -27,13 +27,26 @@ namespace Labb2_Blazor.Components.Pages
         {
             _httpClient = HttpClientFactory.CreateClient("Api");
             isProductSaved = false;
-            Product ??= new();
+            Product ??= new ProductDtoFrontend();
 
-            if (appState.Categories.Count == 0)
+            try
             {
-                await appState.InitializeAsync(_httpClient);
+                if (appState.Categories.Count == 0)
+                {
+                    await appState.InitializeAsync(_httpClient);
+                }
             }
+            catch (HttpRequestException ex)
+            {
+                Console.Error.WriteLine($"Error fetching categories: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+            }
+
             Categories = appState.Categories;
+
         }
 
         private void InvalidInput()
