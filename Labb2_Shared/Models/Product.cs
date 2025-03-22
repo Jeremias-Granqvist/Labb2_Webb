@@ -9,5 +9,7 @@
         public Category ProductCategory { get; set; }
         public int ProductCategoryId { get; set; }
         public bool Status { get; set; }
+
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

@@ -12,7 +12,7 @@ namespace Labb2_Shared.Dtos
 
         public string? Email { get; set; }
 
-        public long? PhoneNo { get; set; }
+        public string? PhoneNo { get; set; }
 
         public int? AdressId { get; set; }
 

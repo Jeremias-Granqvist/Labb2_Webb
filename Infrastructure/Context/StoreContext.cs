@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Labb2_Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using Labb2_Shared;
-using Labb2_Shared.Models;
 namespace Labb2_Infrastructure;
 
 public partial class StoreContext : DbContext
@@ -16,19 +13,19 @@ public partial class StoreContext : DbContext
     }
 
     public virtual DbSet<Adress> Adresses { get; set; }
-
     public virtual DbSet<Category> Categories { get; set; }
-
     public virtual DbSet<Customer> Customers { get; set; }
-
     public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
 
-            
+
             //optionsBuilder.UseSqlServer("Server=localhost;Database=[Jeremias Granqvist Labb2 Webb];TrustServerCertificate=true;IntegratedSecurity=true;");
             base.OnConfiguring(optionsBuilder);
         }
@@ -80,9 +77,48 @@ public partial class StoreContext : DbContext
             entity.HasOne(d => d.ProductCategory).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductCategoryId)
                 .HasConstraintName("FK_Produkter_Kategorier");
+
+            modelBuilder.Entity<OrderItem>()
+                .HasKey(oi => new { oi.OrderId, oi.ProductId });
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(oi => oi.ProductId);
+
+            modelBuilder.Entity<Customer>()
+    .HasOne(c => c.Adress)
+    .WithMany(a => a.Customers)
+    .HasForeignKey(c => c.AdressId);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Customer)
+                .WithMany(c => c.Orders)
+                .HasForeignKey(o => o.CustomerId);
+
+            modelBuilder.Entity<OrderItem>()
+    .HasKey(oi => new { oi.OrderId, oi.ProductId });
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(oi => oi.ProductId);
+
         }));
 
-        var testcategory = new Category { CategoryId = 1,
+        var testcategory = new Category
+        {
+            CategoryId = 1,
             CategoryName = "test"
         };
         var testcustomer = new Product
