@@ -44,7 +44,7 @@ namespace Labb2_Infrastructure.Services
                 return false;
             }
 
-            productToUpdate.UpdateFromDTO(productDto);
+            productToUpdate.UpdateProductFromDTO(productDto);
 
             return await _repository.UpdateAsync(productToUpdate);
         }

@@ -6,6 +6,7 @@ using Labb2_Shared.Models;
 using Labb2_Shared.Interfaces;
 using Labb2_Infrastructure.Services;
 using Labb2_Shared.Dtos;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Labb2_API.Controllers;
 
@@ -43,7 +44,7 @@ public class CustomerController : ControllerBase
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCustomer(int id, CustomerUpdateDto customer)
+    public async Task<IActionResult> PutCustomer(int id, CustomerDto customer)
     {
         await _customerService.UpdateCustomerAsync(id, customer);
         return Ok();
@@ -64,4 +65,5 @@ public class CustomerController : ControllerBase
         }
 
     }
+
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Labb2_Infrastructure.Repositories
 {
-    class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
         private readonly StoreContext _context;
         public CustomerRepository(StoreContext context)
@@ -38,6 +38,14 @@ namespace Labb2_Infrastructure.Repositories
         public async Task<IEnumerable<Customer>> GetCustomerAsync()
         {
             return await _context.Customers.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Customer>> GetAllAsync()
+        {
+            return await _context.Customers
+                .Include(c => c.Orders)
+                .Include(a => a.Adress)
+                .ToListAsync();
         }
     }
 }

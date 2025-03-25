@@ -12,9 +12,9 @@ namespace Labb2_Shared.Interfaces
     {
         Task<Customer> CreateCustomerAsync(CustomerDto customerDto);
         Task<IEnumerable<CustomerDto>> GetAllCustomerAsync();
-        Task<Customer> GetCustomerAsync(int id);
+        Task<CustomerDto> GetCustomerByIdAsync(int id);
         Task<bool> DeleteCustomerAsync(int id);
 
-        Task<bool> UpdateCustomerAsync(int id, CustomerUpdateDto customerUpdateDto);
+        Task<bool> UpdateCustomerAsync(int id, CustomerDto customerUpdateDto);
     }
 }

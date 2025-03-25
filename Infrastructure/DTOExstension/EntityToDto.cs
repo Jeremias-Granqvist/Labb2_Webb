@@ -39,5 +39,29 @@ namespace Labb2_Infrastructure.DTOExstension
             }
             return productList;
         }
+
+        public static IEnumerable<CustomerDto> CustomerToDto(this IEnumerable<Customer> customers)
+        {
+            var customerList = new List<CustomerDto>();
+            foreach (var customer in customers)
+            {
+                customerList.Add(new CustomerDto
+                {
+                    CustomerId = customer.CustomerId,
+                    Firstname = customer.Firstname,
+                    Lastname = customer.Lastname,
+                    PhoneNo = customer.PhoneNo,
+                    Email = customer.Email,
+                    Adress = customer.Adress,
+                    AdressId = customer.AdressId,
+                    Orders = customer.Orders.Select(o => new OrderDto
+                    {
+                        OrderId = o.OrderId,
+                        DateOfOrder = o.DateOfOrder
+                    }).ToList()
+                });
+            }
+            return customerList;
+        }
     }
 }

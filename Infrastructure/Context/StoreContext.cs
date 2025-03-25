@@ -24,9 +24,6 @@ public partial class StoreContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-
-
-            //optionsBuilder.UseSqlServer("Server=localhost;Database=[Jeremias Granqvist Labb2 Webb];TrustServerCertificate=true;IntegratedSecurity=true;");
             base.OnConfiguring(optionsBuilder);
         }
     }
@@ -49,30 +46,32 @@ public partial class StoreContext : DbContext
             entity.Property(e => e.CategoryName).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<Customer>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Customer>>)(entity =>
+        modelBuilder.Entity<Customer>((entity =>
         {
-            entity.Property((System.Linq.Expressions.Expression<Func<Customer, int>>)(e => (int)e.CustomerId))
-                .ValueGeneratedNever()
-                .HasColumnName("CustomerID");
+            entity.HasKey((e => e.CustomerId)).HasName("PK_Customers");
+            entity.Property((e => (int)e.CustomerId))
+            .ValueGeneratedOnAdd()
+            .HasColumnName("CustomerId");
+
             entity.Property(e => e.AdressId).HasColumnName("AdressID");
-            entity.Property((System.Linq.Expressions.Expression<Func<Customer, string?>>)(e => e.Email)).HasMaxLength(50);
-            entity.Property((System.Linq.Expressions.Expression<Func<Customer, string?>>)(e => e.Firstname)).HasMaxLength(50);
-            entity.Property((System.Linq.Expressions.Expression<Func<Customer, string?>>)(e => e.Lastname)).HasMaxLength(50);
+            entity.Property((e => e.Email)).HasMaxLength(50);
+            entity.Property((e => e.Firstname)).HasMaxLength(50);
+            entity.Property((e => e.Lastname)).HasMaxLength(50);
 
             entity.HasOne(d => d.Adress).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.AdressId)
                 .HasConstraintName("FK_Customers_Adresses");
         }));
 
-        modelBuilder.Entity<Product>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Product>>)(entity =>
+        modelBuilder.Entity<Product>((entity =>
         {
-            entity.HasKey((System.Linq.Expressions.Expression<Func<Product, object?>>)(e => e.ProductId)).HasName("PK_Produkter");
+            entity.HasKey((e => e.ProductId)).HasName("PK_Produkter");
 
-            entity.Property((System.Linq.Expressions.Expression<Func<Product, int>>)(e => (int)e.ProductId)).HasColumnName("ProductID");
+            entity.Property((e => e.ProductId)).HasColumnName("ProductID");
             entity.Property(e => e.ProductCategoryId).HasColumnName("ProductCategoryID");
-            entity.Property((System.Linq.Expressions.Expression<Func<Product, string?>>)(e => e.ProductDescription)).HasMaxLength(50);
-            entity.Property((System.Linq.Expressions.Expression<Func<Product, string?>>)(e => e.ProductName)).HasMaxLength(50);
-            entity.Property((System.Linq.Expressions.Expression<Func<Product, bool?>>)(e => e.Status));
+            entity.Property((e => e.ProductDescription)).HasMaxLength(50);
+            entity.Property((e => e.ProductName)).HasMaxLength(50);
+            entity.Property((e => e.Status));
 
             entity.HasOne(d => d.ProductCategory).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductCategoryId)
@@ -92,9 +91,15 @@ public partial class StoreContext : DbContext
                 .HasForeignKey(oi => oi.ProductId);
 
             modelBuilder.Entity<Customer>()
-    .HasOne(c => c.Adress)
-    .WithMany(a => a.Customers)
-    .HasForeignKey(c => c.AdressId);
+                .HasOne(c => c.Adress)
+                .WithMany(a => a.Customers)
+                .HasForeignKey(c => c.AdressId);
+
+            modelBuilder.Entity<Customer>()
+                .HasMany(c => c.Orders)
+                .WithOne(o => o.Customer)
+                .HasForeignKey(o => o.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer)
