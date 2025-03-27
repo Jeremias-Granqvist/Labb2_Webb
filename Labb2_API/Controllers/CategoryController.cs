@@ -51,7 +51,7 @@ public class CategoryController : ControllerBase
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCategory(int id, CategoryUpdateDto category)
+    public async Task<IActionResult> PutCategory(int id, CategoryDto category)
     {
         await _categoryService.UpdateCategoryAsync(id, category);
         return Ok();

@@ -19,6 +19,8 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAdressService, AdressService>();
 builder.Services.AddScoped<IReferenceRepository, ReferenceRepository>();
 builder.Services.AddScoped<IReferenceService, ReferenceService>();
 
@@ -39,16 +41,6 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod();
     });
 });
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: "frontend-only", configurePolicy: policy =>
-//    {
-//        policy.AllowAnyHeader();
-//        policy.AllowAnyMethod();
-//        policy.AllowAnyOrigin();
-//    });
-//});
 
 var app = builder.Build();
 

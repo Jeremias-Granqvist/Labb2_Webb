@@ -2,6 +2,7 @@
 using Labb2_Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -62,6 +63,98 @@ namespace Labb2_Infrastructure.DTOExstension
                 });
             }
             return customerList;
+        }
+
+        public static IEnumerable<OrderDto> OrderToDto(this IEnumerable<Order> orders)
+        {
+            var orderList = new List<OrderDto>();
+            foreach (var order in orders)
+            {
+                orderList.Add(new OrderDto
+                {
+                    OrderId = order.OrderId,
+                    OrderItems = order.OrderItems.Select(item => new OrderItemDto
+                    {
+                        OrderItemId = item.OrderItemId,
+                        OrderId = item.OrderId,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        Price = item.Price,
+                        Product = new ProductDto
+                        {
+                            Id = item.Product.ProductId,
+                            CategoryId = item.Product.ProductCategoryId,
+                            Name = item.Product.ProductName,
+                            Description = item.Product.ProductDescription,
+                            Price = item.Product.Price,
+                            Status = item.Product.Status
+                        }
+                    }).ToList(),
+                    DateOfOrder = order.DateOfOrder,
+                    CustomerId = order.CustomerId,
+                    Customer = new CustomerDto
+                    {
+                        Firstname = order.Customer.Firstname,
+                        Lastname = order.Customer.Lastname,
+                        AdressId = order.Customer.AdressId,
+                        CustomerId = order.Customer.CustomerId,
+                        Email = order.Customer.Email,
+                        PhoneNo = order.Customer.PhoneNo,
+                        Orders = orders.Where(o => o.CustomerId == order.CustomerId)
+                        .Select(o => new OrderDto
+                        {
+                            OrderId = o.OrderId,
+                            DateOfOrder = o.DateOfOrder,
+                            OrderItems = o.OrderItems.Select(item => new OrderItemDto
+                            {
+                                OrderItemId = item.OrderItemId,
+                                ProductId = item.ProductId,
+                                Price = item.Price,
+                                Quantity = item.Quantity,
+                                OrderId = item.OrderId,
+                                Order = item.Order
+                                Product = new ProductDto
+                                {
+                                    Id = item.Product.ProductId,
+                                    CategoryId = item.Product.ProductCategoryId,
+                                    Name = item.Product.ProductName,
+                                    Description = item.Product.ProductDescription,
+                                    Price = item.Product.Price,
+                                    Status = item.Product.Status
+                                }
+                            })
+                        }),
+                        Adress = new AdressDto
+                        {
+                            AdressId = order.Customer.Adress.AdressId,
+                            StreetName = order.Customer.Adress.StreetName,
+                            City = order.Customer.Adress.City,
+                            ZipCode = order.Customer.Adress.ZipCode,
+                            Country = order.Customer.Adress.Country
+                        }
+
+                    },
+                });
+            }
+            return orderList;
+        }
+
+        public static IEnumerable<AdressDto> AdressToDto(this IEnumerable<Adress> adresses)
+        {
+            var adressList = new List<AdressDto>();
+            foreach (var adress in adresses)
+            {
+                adressList.Add(new AdressDto
+                {
+                    AdressId = adress.AdressId,
+                    StreetName = adress.StreetName,
+                    City = adress.City,
+                    ZipCode = adress.ZipCode,
+                    Country = adress.Country,
+                    Customers = adress.Customers
+                });
+            }
+            return adressList;
         }
     }
 }

@@ -20,13 +20,13 @@ namespace Labb2_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
         {
-            var orders = await _orderService.GetOrderAsync();
+            var orders = await _orderService.GetAllOrdersAsync();
 
             return Ok(orders);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrderbyId(int id)
+        public async Task<ActionResult<OrderDto>> GetOrderbyId(int id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
 

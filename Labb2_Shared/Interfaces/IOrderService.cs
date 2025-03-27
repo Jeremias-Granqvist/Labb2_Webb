@@ -11,8 +11,8 @@ namespace Labb2_Shared.Interfaces
     public interface IOrderService
     {
         Task<Order> CreateOrderAsync(OrderDto orderDto);
-        Task<IEnumerable<OrderDto>> GetOrderAsync();
-        Task<Order> GetOrderByIdAsync(int id);
+        Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
+        Task<OrderDto> GetOrderByIdAsync(int id);
 
         Task<bool> DeleteOrderAsync(int id);
 

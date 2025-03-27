@@ -15,7 +15,7 @@ namespace Labb2_Shared.Dtos
         public int Quantity { get; set; }
         public int Price { get; set; }
 
-        public virtual Order Order { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual OrderDto Order { get; set; }
+        public virtual ProductDto Product { get; set; }
     }
 }

@@ -15,6 +15,6 @@ namespace Labb2_Shared.Interfaces
         Task<Category> GetCategoryAsync(int id);
         Task<bool> DeleteCategoryAsync(int id);
 
-        Task<bool> UpdateCategoryAsync(int id, CategoryUpdateDto categoryUpdateDto);
+        Task<bool> UpdateCategoryAsync(int id, CategoryDto categoryUpdateDto);
     }
 }

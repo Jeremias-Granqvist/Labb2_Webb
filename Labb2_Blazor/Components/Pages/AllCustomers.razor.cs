@@ -1,5 +1,7 @@
 using Labb2_Blazor.State;
+using Labb2_Infrastructure.DTOExstension;
 using Labb2_Shared.Dtos;
+using Labb2_Shared.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace Labb2_Blazor.Components.Pages
@@ -16,6 +18,9 @@ namespace Labb2_Blazor.Components.Pages
         private List<CustomerDto> allCustomers = new List<CustomerDto>();
         private List<CustomerDto> filteredCustomers = new List<CustomerDto>();
         private List<OrderDto> allOrders = new List<OrderDto>();
+        private List<Adress> allAdress = new List<Adress>();
+        private Adress updateAdress;
+
 
         protected string message = string.Empty;
         protected string statusClass = string.Empty;
@@ -28,8 +33,9 @@ namespace Labb2_Blazor.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             _httpClient = HttpClientFactory.CreateClient("Api");
-            await FetchCustomers();
+            await FetchAdresses();
             await FetchOrders();
+            await FetchCustomers();
         }
 
 
@@ -42,10 +48,18 @@ namespace Labb2_Blazor.Components.Pages
                 filteredCustomers = response;
             }
         }
-
+        private async Task FetchAdresses()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<AdressDto>>("api/adress");
+            foreach (var adress in response)
+            {
+                
+            }
+        }
         private async Task FetchOrders()
         {
             var response = await _httpClient.GetFromJsonAsync<List<OrderDto>>("api/order");
+            allOrders = response;
         }
 
         private void SearchCustomers()
@@ -64,6 +78,8 @@ namespace Labb2_Blazor.Components.Pages
         }
         private void OnEditClick(CustomerDto customer)
         {
+            updateAdress = allAdress.Find(a => a.AdressId == customer.AdressId);
+
             CustomerToEdit = new CustomerDto
             {
                 CustomerId = customer.CustomerId,
@@ -72,8 +88,9 @@ namespace Labb2_Blazor.Components.Pages
                 Email = customer.Email,
                 PhoneNo = customer.PhoneNo,
                 AdressId = customer.AdressId,
-                Adress = customer.Adress,
-                Orders = customer.Orders
+                Adress = updateAdress,
+                Orders = customer.Orders,
+                
             };
             isEditing = true;
         }

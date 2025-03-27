@@ -63,15 +63,19 @@ else
             
             <div class="form-group">
                 <label for="description">Street</label>
-                <input type="text" id="Adress" class="form-control" @bind="CustomerToEdit.Adress.StreetName" />
+                <input type="text" id="Adress" class="form-control" @bind="updateAdress.StreetName" />
             </div>
             <div class="form-group">
                 <label for="description">Zipcode</label>
-                <input type="text" id="Adress" class="form-control" @bind="CustomerToEdit.Adress.ZipCode" />
+                <input type="text" id="Adress" class="form-control" @bind="updateAdress.ZipCode" />
+            </div>
+            <div class="form-group">
+                <label for="description">City</label>
+                <input type="text" id="Adress" class="form-control" @bind="updateAdress.City" />
             </div>
             <div class="form-group">
                 <label for="description">Country</label>
-                <input type="text" id="Adress" class="form-control" @bind="CustomerToEdit.Adress.ZipCode" />
+                <input type="text" id="Adress" class="form-control" @bind="updateAdress.Country" />
             </div>
             
             @if (CustomerToEdit.Orders != null && CustomerToEdit.Orders.Count != 0)
