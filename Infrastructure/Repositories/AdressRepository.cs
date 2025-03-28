@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,14 @@ namespace Labb2_Infrastructure.Repositories
         {
             _context= context;
         }
+
+        public async Task<Adress> GetAddressWithCustomersAsync(int addressId)
+        {
+            return await _context.Adresses
+                .Include(a => a.Customers)  // Eagerly load the Customers at the Address
+                .FirstOrDefaultAsync(a => a.AdressId == addressId);
+        }
+
 
         public async Task<Adress> CreateAdressAsync(Adress adress)
         {

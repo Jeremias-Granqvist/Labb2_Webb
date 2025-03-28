@@ -18,8 +18,8 @@ namespace Labb2_Blazor.Components.Pages
         private List<CustomerDto> allCustomers = new List<CustomerDto>();
         private List<CustomerDto> filteredCustomers = new List<CustomerDto>();
         private List<OrderDto> allOrders = new List<OrderDto>();
-        private List<Adress> allAdress = new List<Adress>();
-        private Adress updateAdress;
+        private List<AdressDto> allAdress = new List<AdressDto>();
+        private AdressDto updateAdress;
 
 
         protected string message = string.Empty;
@@ -33,10 +33,21 @@ namespace Labb2_Blazor.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             _httpClient = HttpClientFactory.CreateClient("Api");
-            await FetchAdresses();
-            await FetchOrders();
-            await FetchCustomers();
+            try
+            {
+                await FetchCustomers();
+                if (allCustomers != null && allCustomers.Any())
+                {
+                    await FetchAdresses();
+                    await FetchOrders();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during initialization: {ex.Message}");
+            }
         }
+        
 
 
         private async Task FetchCustomers()
@@ -53,13 +64,25 @@ namespace Labb2_Blazor.Components.Pages
             var response = await _httpClient.GetFromJsonAsync<List<AdressDto>>("api/adress");
             foreach (var adress in response)
             {
-                
+                allAdress.Add(adress);
             }
         }
         private async Task FetchOrders()
         {
-            var response = await _httpClient.GetFromJsonAsync<List<OrderDto>>("api/order");
-            allOrders = response;
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<List<OrderDto>>("api/order");
+                if (response != null)
+                {
+                    allOrders = response;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Error fetching orders: {ex.Message}");
+                message = "There was an error fetching the orders. Please try again later.";
+                statusClass = "alert-danger"; // Display an error message in the UI
+            }
         }
 
         private void SearchCustomers()

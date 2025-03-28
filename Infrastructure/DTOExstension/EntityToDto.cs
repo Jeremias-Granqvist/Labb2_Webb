@@ -12,6 +12,7 @@ namespace Labb2_Infrastructure.DTOExstension
 {
     public static class EntityToDto
     {
+        //Categories
         public static IEnumerable<CategoryDto> CategoriesToDto(this IEnumerable<Category> categories)
         {
             var result = new List<CategoryDto>();
@@ -23,6 +24,7 @@ namespace Labb2_Infrastructure.DTOExstension
             return result;
         }
 
+        //Products
         public static IEnumerable<ProductDto> ProductToDto(this IEnumerable<Product> products)
         {
             var productList = new List<ProductDto>();
@@ -41,6 +43,20 @@ namespace Labb2_Infrastructure.DTOExstension
             return productList;
         }
 
+        public static ProductDto TransformProductToDto(Product product)
+        {
+            return new ProductDto
+            {
+                Id = product.ProductId,
+                CategoryId = product.ProductCategoryId,
+                Name = product.ProductName,
+                Description = product.ProductDescription,
+                Price = product.Price,
+                Status = product.Status
+            };
+
+        }
+        //Customers
         public static IEnumerable<CustomerDto> CustomerToDto(this IEnumerable<Customer> customers)
         {
             var customerList = new List<CustomerDto>();
@@ -53,7 +69,7 @@ namespace Labb2_Infrastructure.DTOExstension
                     Lastname = customer.Lastname,
                     PhoneNo = customer.PhoneNo,
                     Email = customer.Email,
-                    Adress = customer.Adress,
+                    Adress = customer.Adress != null ? TransformAdressToDto(customer.Adress) : null,
                     AdressId = customer.AdressId,
                     Orders = customer.Orders.Select(o => new OrderDto
                     {
@@ -65,79 +81,93 @@ namespace Labb2_Infrastructure.DTOExstension
             return customerList;
         }
 
+
+        public static CustomerDto TransformCustomerToDto(Customer customer)
+        {
+            if (customer == null)
+            {
+                throw new ArgumentNullException(nameof(customer), "customer cannot be null");
+            }
+            return new CustomerDto
+            {
+                CustomerId = customer.CustomerId,
+                Firstname = customer.Firstname,
+                Lastname = customer.Lastname,
+                Email = customer.Email,
+                PhoneNo = customer.PhoneNo,
+                AdressId = customer.AdressId,
+                Adress = customer.Adress != null ? TransformAdressToDto(customer.Adress) : null
+
+            };
+        }
+
+        //Order
         public static IEnumerable<OrderDto> OrderToDto(this IEnumerable<Order> orders)
         {
             var orderList = new List<OrderDto>();
+
             foreach (var order in orders)
             {
-                orderList.Add(new OrderDto
+                var orderDto = new OrderDto
                 {
                     OrderId = order.OrderId,
-                    OrderItems = order.OrderItems.Select(item => new OrderItemDto
-                    {
-                        OrderItemId = item.OrderItemId,
-                        OrderId = item.OrderId,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        Price = item.Price,
-                        Product = new ProductDto
-                        {
-                            Id = item.Product.ProductId,
-                            CategoryId = item.Product.ProductCategoryId,
-                            Name = item.Product.ProductName,
-                            Description = item.Product.ProductDescription,
-                            Price = item.Product.Price,
-                            Status = item.Product.Status
-                        }
-                    }).ToList(),
                     DateOfOrder = order.DateOfOrder,
                     CustomerId = order.CustomerId,
-                    Customer = new CustomerDto
-                    {
-                        Firstname = order.Customer.Firstname,
-                        Lastname = order.Customer.Lastname,
-                        AdressId = order.Customer.AdressId,
-                        CustomerId = order.Customer.CustomerId,
-                        Email = order.Customer.Email,
-                        PhoneNo = order.Customer.PhoneNo,
-                        Orders = orders.Where(o => o.CustomerId == order.CustomerId)
-                        .Select(o => new OrderDto
-                        {
-                            OrderId = o.OrderId,
-                            DateOfOrder = o.DateOfOrder,
-                            OrderItems = o.OrderItems.Select(item => new OrderItemDto
-                            {
-                                OrderItemId = item.OrderItemId,
-                                ProductId = item.ProductId,
-                                Price = item.Price,
-                                Quantity = item.Quantity,
-                                OrderId = item.OrderId,
-                                Order = item.Order
-                                Product = new ProductDto
-                                {
-                                    Id = item.Product.ProductId,
-                                    CategoryId = item.Product.ProductCategoryId,
-                                    Name = item.Product.ProductName,
-                                    Description = item.Product.ProductDescription,
-                                    Price = item.Product.Price,
-                                    Status = item.Product.Status
-                                }
-                            })
-                        }),
-                        Adress = new AdressDto
-                        {
-                            AdressId = order.Customer.Adress.AdressId,
-                            StreetName = order.Customer.Adress.StreetName,
-                            City = order.Customer.Adress.City,
-                            ZipCode = order.Customer.Adress.ZipCode,
-                            Country = order.Customer.Adress.Country
-                        }
+                    OrderItems = order.OrderItems.Select(item => TransformOrderItemToDto(item)).ToList(),
+                    //Customer = TransformCustomerToDto(order.Customer)
+                };
 
-                    },
-                });
+                orderList.Add(orderDto);
             }
+
             return orderList;
         }
+        public static OrderDto TransformOrderToDto(Order order)
+        {
+            return new OrderDto
+            {
+                OrderId = order.OrderId,
+                DateOfOrder = order.DateOfOrder,
+                CustomerId = order.CustomerId,
+                //Customer = TransformCustomerToDto(order.Customer),
+                OrderItems = TransformOrderItemsListToDto(order.OrderItems).ToList()
+            };
+        }
+
+
+        //OrderItem
+        public static OrderItemDto TransformOrderItemToDto(OrderItem item)
+        {
+            return new OrderItemDto
+            {
+                OrderItemId = item.OrderItemId,
+                OrderId = item.OrderId,
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+                Price = item.Price,
+                Product = TransformProductToDto(item.Product)
+            };
+        }
+        public static ICollection<OrderItemDto> TransformOrderItemsListToDto(ICollection<OrderItem> orderItems)
+        {
+            ICollection<OrderItemDto> orderItemDtos = new List<OrderItemDto>();
+            foreach (var item in orderItems)
+            {
+                OrderItemDto orderItemDto = new OrderItemDto
+                {
+                    OrderId = item.OrderId,
+                    OrderItemId = item.OrderItemId,
+                    Price = item.Price,
+                    Product = TransformProductToDto(item.Product),
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity
+                };
+                orderItemDtos.Add(orderItemDto);
+            }
+            return orderItemDtos;
+        }
+
+        //Adress
 
         public static IEnumerable<AdressDto> AdressToDto(this IEnumerable<Adress> adresses)
         {
@@ -151,10 +181,27 @@ namespace Labb2_Infrastructure.DTOExstension
                     City = adress.City,
                     ZipCode = adress.ZipCode,
                     Country = adress.Country,
-                    Customers = adress.Customers
+                    Customers = CustomerToDto(adress.Customers).ToList()
                 });
             }
             return adressList;
         }
+        public static AdressDto TransformAdressToDto(Adress adress)
+        {
+            if (adress == null)
+            {
+                throw new ArgumentNullException(nameof(adress), "Adress cannot be null.");
+
+            }
+            return new AdressDto
+            {
+                AdressId = adress.AdressId,
+                StreetName = adress.StreetName,
+                City = adress.City,
+                ZipCode = adress.ZipCode,
+                Country = adress.Country
+            };
+        }
+
     }
 }

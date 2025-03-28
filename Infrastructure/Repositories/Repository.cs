@@ -51,6 +51,11 @@ namespace Labb2_Infrastructure.Repositories
             return await dbSet.FindAsync(id);
         }
 
+        public IQueryable<Tentity> GetQueryable()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> UpdateAsync(Tentity entity)
         {
             var trackedEntity = dbSet.Attach(entity);

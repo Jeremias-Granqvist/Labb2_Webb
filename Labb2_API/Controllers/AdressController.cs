@@ -1,4 +1,5 @@
-﻿using Labb2_Shared.Dtos;
+﻿using Labb2_Infrastructure.Repositories;
+using Labb2_Shared.Dtos;
 using Labb2_Shared.Interfaces;
 using Labb2_Shared.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,11 @@ namespace Labb2_API.Controllers;
 public class AdressController : ControllerBase
 {
     private readonly IAdressService _adressService;
-    public AdressController(IAdressService adressService)
+    private readonly IAdressRepository _adressRepository;
+    public AdressController(IAdressService adressService, IAdressRepository adressRepository)
     {
         _adressService = adressService;
+        _adressRepository = adressRepository;
     }
 
     //GET (hämta med API)
@@ -22,7 +25,16 @@ public class AdressController : ControllerBase
         var adress = await _adressService.GetAllAdressAsync();
         return Ok(adress);
     }
-
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAddressWithCustomers(int id)
+    {
+        var address = await _adressRepository.GetAddressWithCustomersAsync(id);
+        if (address == null)
+        {
+            return NotFound();
+        }
+        return Ok(address);
+    }
 
 
     //POST (skapa med API)

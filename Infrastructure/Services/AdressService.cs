@@ -40,7 +40,7 @@ namespace Labb2_Infrastructure.Services
                 City = adress.City,
                 ZipCode = adress.ZipCode,
                 Country = adress.Country,
-                Customers = adress.Customers
+                Customers = EntityToDto.CustomerToDto(adress.Customers).ToList()
             };
         }
 

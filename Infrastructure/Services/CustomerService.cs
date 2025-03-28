@@ -14,11 +14,10 @@ namespace Labb2_Infrastructure.Services
     public class CustomerService : ICustomerService
     {
         private readonly IRepository<Customer> _repository;
-        //private readonly UnitOfWork _unitOfWork;
 
-        public CustomerService(IRepository<Customer> repository) //UnitOfWork unitOfWork
+
+        public CustomerService(IRepository<Customer> repository) 
         {
-            //_unitOfWork = unitOfWork;
             _repository = repository;
         }
         public async Task<Customer> CreateCustomerAsync(CustomerDto customerDto)
@@ -50,10 +49,9 @@ namespace Labb2_Infrastructure.Services
                 Lastname = customer.Lastname,
                 Email = customer.Email,
                 PhoneNo = customer.PhoneNo,
-                Adress = customer.Adress
+                Adress = EntityToDto.TransformAdressToDto(customer.Adress)
 
             };
-            //return customer;
         }
 
         public async Task<bool> UpdateCustomerAsync(int id, CustomerDto customerDto)

@@ -42,9 +42,9 @@ namespace Labb2_Infrastructure.Services
             return new OrderDto
             {
                 OrderId = order.OrderId,
-                OrderItems = order.OrderItems,
+                OrderItems = EntityToDto.TransformOrderItemsListToDto(order.OrderItems),
                 DateOfOrder = order.DateOfOrder,
-                Customer = order.Customer,
+                Customer = EntityToDto.TransformCustomerToDto(order.Customer),
                 CustomerId = order.CustomerId
             };
         }

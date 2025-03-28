@@ -9,8 +9,9 @@ namespace Labb2_Shared.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<Order> CreateOrderAsync(Order order);
+        Task<Order> GetOrderWithCustomerAndItemsAsync(int orderId);
 
+        Task<Order> CreateOrderAsync(Order order);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
         Task<Order> GetOrderByIdAsync(int id);
         Task<bool> DeleteOrderAsync(int id);

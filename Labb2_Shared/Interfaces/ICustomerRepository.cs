@@ -11,6 +11,9 @@ namespace Labb2_Shared.Interfaces
     {
         Task<Customer> CreateCustomerAsync(Customer customer);
 
+        Task<Customer> GetCustomerWithAdressAsync(int customerId);
+        Task<Customer> GetCustomerWithOrdersAsync(int customerId);
+
         Task<IEnumerable<Customer>> GetCustomerAsync();
 
         Task<bool> DeleteCustomerAsync(int id);
