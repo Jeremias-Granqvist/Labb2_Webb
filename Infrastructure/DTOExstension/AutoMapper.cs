@@ -19,6 +19,7 @@ namespace Labb2_Infrastructure.DTOExstension
         {
             return _mapper.Map<Tdestination>(source);
         }
+
         public static Tdestination Map(Tsource source, Tdestination destination)
         {
             return _mapper.Map(source, destination);

@@ -15,6 +15,7 @@
 				<th>CustomerId</th>
 				<th>First name</th>
 				<th>Last name</th>
+                <th>Email</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -24,6 +25,7 @@
 					<td>@customer.Customer.CustomerId</td>
 					<td>@customer.Customer.Firstname</td>
 					<td>@customer.Customer.Lastname</td>
+                    <td>@customer.Customer.Email</td>
 					<td><button class="btn btn-secondary btn-sm" @onclick="() => OnEditClick(customer.Customer)">Edit</button></td>
 
 				</tr>
@@ -83,7 +85,6 @@ else
     <div class="form-group">
         <label for="Orders">Orders</label>
         
-        <!-- Table for Orders -->
         <table class="table">
             <thead>
                 <tr>
@@ -96,7 +97,7 @@ else
                 {
                     <tr>
                         <td>@order.OrderId</td>
-                        <td>@order.DateOfOrder.ToString("dd/MM/yyyy")</td> <!-- Adjust format as needed -->
+                        <td>@order.DateOfOrder.ToString("dd/MM/yyyy")</td> 
                     </tr>
                 }
             </tbody>

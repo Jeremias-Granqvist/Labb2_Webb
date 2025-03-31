@@ -10,7 +10,7 @@ namespace Labb2_Shared.Dtos
     {
         public CustomerDto Customer { get; set; }
         public AdressDto Adress { get; set; }
-        public List<OrderDto> Orders { get; set; } = new List<OrderDto>();
+        public List<OrderWithDetailsDto> Orders { get; set; } = new List<OrderWithDetailsDto>();
     }
 
 }

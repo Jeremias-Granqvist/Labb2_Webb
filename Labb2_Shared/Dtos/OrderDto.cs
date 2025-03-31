@@ -12,7 +12,6 @@ namespace Labb2_Shared.Dtos
         public int OrderId { get; set; }
         public int? CustomerId { get; set; }
         public DateOnly DateOfOrder { get; set; }
-        public virtual CustomerDto? Customer { get; set; }
         public virtual ICollection<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
     }
 }

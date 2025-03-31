@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Labb2_Infrastructure.Services
 {
-    class OrderItemService : IOrderitemService
+    public class OrderItemService : IOrderitemService
     {
 
         private readonly IRepository<OrderItem> _repository;

@@ -12,9 +12,9 @@ namespace Labb2_Infrastructure.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _repository;
+        private readonly IRepository<Category> _repository;
 
-        public CategoryService(ICategoryRepository referenceRepository)
+        public CategoryService(IRepository<Category> referenceRepository)
         {
             _repository = referenceRepository;
         }
@@ -31,7 +31,7 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoryAsync()
         {
-            var list = await _repository.GetCategoriesAsync();
+            var list = await _repository.GetAllAsync();
             var listToDto = AutoMapper<Category, CategoryDto>.MapListIenum(list);
             return listToDto;
         }
