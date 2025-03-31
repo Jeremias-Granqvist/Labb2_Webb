@@ -20,7 +20,7 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<Order> CreateOrderAsync(OrderDto orderDto)
         {
-            var order = orderDto.OrderToEntity();
+            var order = AutoMapper<OrderDto, Order>.Map(orderDto);
 
             return await _repository.AddAsync(order);
         }
@@ -32,31 +32,24 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
         {
-            return (await _repository.GetAllAsync()).OrderToDto();
+
+            var list = await _repository.GetAllAsync();
+            var changedList = AutoMapper<Order, OrderDto>.MapListIenum(list);
+            return changedList;
         }
 
         public async Task<OrderDto> GetOrderByIdAsync(int id)
         {
             var order = await _repository.GetByIdAsync(id);
             if (order == null) return null;
-            return new OrderDto
-            {
-                OrderId = order.OrderId,
-                OrderItems = EntityToDto.TransformOrderItemsListToDto(order.OrderItems),
-                DateOfOrder = order.DateOfOrder,
-                Customer = EntityToDto.TransformCustomerToDto(order.Customer),
-                CustomerId = order.CustomerId
-            };
+            return AutoMapper<Order, OrderDto>.Map(order);
         }
 
         public async Task<bool> UpdateOrderAsync(int id, OrderDto orderDto)
         {
             var orderToUpdate = await _repository.GetByIdAsync(id);
-            if (orderToUpdate == null)
-            {
-                return false;
-            }
-            orderToUpdate.UpdateOrderFromDto(orderDto);
+            if (orderToUpdate == null) return false;
+            AutoMapper<OrderDto, Order>.Map(orderDto, orderToUpdate);
 
             return await _repository.UpdateAsync(orderToUpdate);
         }

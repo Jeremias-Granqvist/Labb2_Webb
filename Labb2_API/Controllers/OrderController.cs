@@ -25,21 +25,7 @@ public class OrderController : ControllerBase
         try
         {
         var orders = await _orderService.GetAllOrdersAsync();
-            var ordersDto = orders.Select(o => new OrderDto
-            {
-                OrderId = o.OrderId,
-                CustomerId = o.CustomerId,
-                DateOfOrder = o.DateOfOrder,
-                OrderItems = o.OrderItems.Select(oi => new OrderItemDto
-                {
-                    OrderItemId = oi.OrderItemId,
-                    ProductId = oi.ProductId,
-                    Quantity = oi.Quantity,
-                    Price = oi.Price
-                }).ToList()
-            }).ToList();
-
-            return Ok(ordersDto);
+            return Ok(orders);
         }
         catch (Exception ex) { 
 

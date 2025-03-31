@@ -21,10 +21,10 @@
 			@foreach (var customer in filteredCustomers)
 			{
 				<tr>
-					<td>@customer.CustomerId</td>
-					<td>@customer.Firstname</td>
-					<td>@customer.Lastname</td>
-					<td><button class="btn btn-secondary btn-sm" @onclick="() => OnEditClick(customer)">Edit</button></td>
+					<td>@customer.Customer.CustomerId</td>
+					<td>@customer.Customer.Firstname</td>
+					<td>@customer.Customer.Lastname</td>
+					<td><button class="btn btn-secondary btn-sm" @onclick="() => OnEditClick(customer.Customer)">Edit</button></td>
 
 				</tr>
 			}
@@ -78,18 +78,33 @@ else
                 <input type="text" id="Country" class="form-control" @bind="updateAdress.Country" />
             </div>
             
-            @if (CustomerToEdit.Orders != null && CustomerToEdit.Orders.Count != 0)
-            {
-            <div class="form-group">
-                <label for="Orders">Orders</label>
-                <select class="form-control" id="orders" @bind="CustomerToEdit.Orders">
-                    @foreach (var order in CustomerToEdit.Orders)
-                    {
-                        <option value="@CustomerToEdit.Orders">@CustomerToEdit.Orders</option>
-                    }
-                </select>
-            </div>
-            }
+@if (CustomerToEdit != null && CustomerToEdit.Orders != null && CustomerToEdit.Orders.Count > 0)
+{
+    <div class="form-group">
+        <label for="Orders">Orders</label>
+        
+        <!-- Table for Orders -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order Number</th>
+                    <th>Date of Order</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in CustomerToEdit.Orders)
+                {
+                    <tr>
+                        <td>@order.OrderId</td>
+                        <td>@order.DateOfOrder.ToString("dd/MM/yyyy")</td> <!-- Adjust format as needed -->
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+
 
             <button type="submit" class="btn btn-success mt-2">Save Changes</button>
             <button type="button" class="btn btn-secondary mt-2" @onclick="CancelEdit">Cancel</button>

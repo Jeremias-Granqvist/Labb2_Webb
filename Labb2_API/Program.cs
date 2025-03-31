@@ -25,7 +25,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IAdressService, AdressService>();
 builder.Services.AddScoped<IAdressRepository, AdressRepository>();
-builder.Services.AddScoped<IReferenceRepository, ReferenceRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IReferenceService, ReferenceService>();
 
 // Add services to the container.

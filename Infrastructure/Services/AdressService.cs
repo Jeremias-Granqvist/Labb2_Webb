@@ -20,7 +20,7 @@ namespace Labb2_Infrastructure.Services
         }
         public async Task<Adress> CreateAdressAsync(AdressDto adressDto)
         {
-            var adress = adressDto.AdressToEntity();
+            var adress = AutoMapper<AdressDto, Adress>.Map(adressDto);
             return await _repository.AddAsync(adress);
         }
 
@@ -33,20 +33,14 @@ namespace Labb2_Infrastructure.Services
         {
             var adress = await _repository.GetByIdAsync(id);
             if (adress == null) return null;
-            return new AdressDto
-            {
-                AdressId = adress.AdressId,
-                StreetName = adress.StreetName,
-                City = adress.City,
-                ZipCode = adress.ZipCode,
-                Country = adress.Country,
-                Customers = EntityToDto.CustomerToDto(adress.Customers).ToList()
-            };
+            return AutoMapper<Adress, AdressDto>.Map(adress);
         }
 
         public async Task<IEnumerable<AdressDto>> GetAllAdressAsync()
         {
-            return (await _repository.GetAllAsync()).AdressToDto();
+            var list = await _repository.GetAllAsync();
+            var changedList = AutoMapper<Adress, AdressDto>.MapListIenum(list);
+            return changedList;
         }
 
         public async Task<bool> UpdateAdressAsync(int id, AdressDto adressDto)
@@ -56,8 +50,7 @@ namespace Labb2_Infrastructure.Services
             {
                 return false;
             }
-
-            adressToUpdate.UpdateAdressFromDto(adressDto);
+            AutoMapper<AdressDto, Adress>.Map(adressDto, adressToUpdate);
 
             return await _repository.UpdateAsync(adressToUpdate);
         }

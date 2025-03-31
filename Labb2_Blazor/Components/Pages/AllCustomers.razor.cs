@@ -15,17 +15,20 @@ namespace Labb2_Blazor.Components.Pages
         public AppState appState { get; set; }
 
         private string searchQuery = string.Empty;
+        private List<CustomerWithDetailsDto> filteredCustomers = new List<CustomerWithDetailsDto>();
+        
         private List<CustomerDto> allCustomers = new List<CustomerDto>();
-        private List<CustomerDto> filteredCustomers = new List<CustomerDto>();
         private List<OrderDto> allOrders = new List<OrderDto>();
         private List<AdressDto> allAdress = new List<AdressDto>();
+        private List<CustomerWithDetailsDto> combinedCustomersWithDetails = new List<CustomerWithDetailsDto>();
+        
         private AdressDto updateAdress;
-
+        private CustomerDto CustomerToEdit;
+        private int? selectedOrderId;
 
         protected string message = string.Empty;
         protected string statusClass = string.Empty;
 
-        private CustomerDto CustomerToEdit;
         protected bool isEditing = false;
 
         protected bool isProductSaved { get; set; }
@@ -41,6 +44,18 @@ namespace Labb2_Blazor.Components.Pages
                     await FetchAdresses();
                     await FetchOrders();
                 }
+
+                if (allCustomers != null && allCustomers.Any() && allAdress != null && allAdress.Any() && allOrders != null && allOrders.Any())
+                {
+                    combinedCustomersWithDetails = allCustomers.Select(customer => new CustomerWithDetailsDto
+                    {
+                        Customer = customer,
+                        Adress = allAdress.FirstOrDefault(adress => adress.AdressId == customer.AdressId),
+                        Orders = allOrders.Where(order => order.CustomerId == customer.CustomerId).ToList()
+                    }).ToList();
+                    filteredCustomers = combinedCustomersWithDetails;
+                }
+                
             }
             catch (Exception ex)
             {
@@ -48,7 +63,10 @@ namespace Labb2_Blazor.Components.Pages
             }
         }
         
-
+        //private async Task FetchOrderItems()
+        //{
+        //    var response = await _httpClient.GetFromJsonAsync<List<OrderItemDto>>("api/OrderItem")
+        //}
 
         private async Task FetchCustomers()
         {
@@ -56,7 +74,6 @@ namespace Labb2_Blazor.Components.Pages
             if (response != null)
             {
                 allCustomers = response;
-                filteredCustomers = response;
             }
         }
         private async Task FetchAdresses()
@@ -89,12 +106,12 @@ namespace Labb2_Blazor.Components.Pages
         {
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                filteredCustomers = allCustomers;
+                filteredCustomers = combinedCustomersWithDetails;
             }
             else
             {
-                filteredCustomers = allCustomers
-                    .Where(p => p.Firstname.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) || p.Lastname.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                filteredCustomers = combinedCustomersWithDetails
+                    .Where(p => p.Customer.Firstname.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) || p.Customer.Lastname.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
             StateHasChanged();
@@ -102,6 +119,7 @@ namespace Labb2_Blazor.Components.Pages
         private void OnEditClick(CustomerDto customer)
         {
             updateAdress = allAdress.Find(a => a.AdressId == customer.AdressId);
+            List<OrderDto> editOrders = allOrders.Where(o => o.CustomerId == customer.CustomerId).ToList();
 
             CustomerToEdit = new CustomerDto
             {
@@ -112,9 +130,11 @@ namespace Labb2_Blazor.Components.Pages
                 PhoneNo = customer.PhoneNo,
                 AdressId = customer.AdressId,
                 Adress = updateAdress,
-                Orders = customer.Orders,
+                Orders = editOrders
                 
             };
+            selectedOrderId = editOrders.Count > 0 ? editOrders[0].OrderId : (int?)null;
+
             isEditing = true;
         }
 
@@ -130,14 +150,9 @@ namespace Labb2_Blazor.Components.Pages
             Console.WriteLine($"id is: {CustomerToEdit.CustomerId}");
 
             CheckResult(response);
+            StateHasChanged();
         }
 
-        private async Task DeleteProduct()
-        {
-            var response = await _httpClient.DeleteFromJsonAsync<HttpResponseMessage>($"api/customer/{CustomerToEdit.CustomerId}");
-            CheckResult(response);
-
-        }
 
         private async void CheckResult(HttpResponseMessage response)
         {

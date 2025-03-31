@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Labb2_Shared.Interfaces;
 
-public interface IReferenceRepository
+public interface ICategoryRepository
 {
     Task<IEnumerable<Category>> GetCategoriesAsync();
 }

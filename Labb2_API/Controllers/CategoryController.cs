@@ -2,6 +2,7 @@
 using Labb2_Infrastructure.Services;
 using Labb2_Shared.Dtos;
 using Labb2_Shared.Interfaces;
+using Labb2_Infrastructure.DTOExstension;
 using Labb2_Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,17 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories()
     {
-         var categories = await _categoryService.GetAllCategoryAsync();
+        try
+        {
+            var categories = await _categoryService.GetAllCategoryAsync();
 
-        return Ok(categories);
+            return Ok(categories);
+        }
+        catch (Exception ex)
+        {
+            // Log exception
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 
     [HttpGet("{id}")]

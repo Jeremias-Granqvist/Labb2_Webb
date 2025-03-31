@@ -36,13 +36,23 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
+        var response = await httpClient.GetAsync("api/categories");
+        if (response.IsSuccessStatusCode)
+        {
         appState.Categories =
             await httpClient.GetFromJsonAsync<List<CategoryDtoFrontend>>("api/categories")
             ?? new List<CategoryDtoFrontend>();
+        }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Fel vid inläsning av kategorier: {ex.Message}");
+        Console.WriteLine($"Error loading categories: {ex.Message}");
+        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+        if (ex.InnerException != null)
+        {
+            Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+            Console.WriteLine($"Inner Stack Trace: {ex.InnerException.StackTrace}");
+        }
     }
 }
 

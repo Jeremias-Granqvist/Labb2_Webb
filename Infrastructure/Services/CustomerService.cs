@@ -22,7 +22,7 @@ namespace Labb2_Infrastructure.Services
         }
         public async Task<Customer> CreateCustomerAsync(CustomerDto customerDto)
         {
-            var customer = customerDto.CustomerToEntity();
+            var customer = AutoMapper<CustomerDto, Customer>.Map(customerDto);
 
             return await _repository.AddAsync(customer);
         }
@@ -34,7 +34,9 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<IEnumerable<CustomerDto>> GetAllCustomerAsync()
         {
-            return (await _repository.GetAllAsync()).CustomerToDto();
+            var list = await _repository.GetAllAsync();
+            var changedList = AutoMapper<Customer, CustomerDto>.MapListIenum(list);
+            return changedList;
 
         }
 
@@ -42,16 +44,8 @@ namespace Labb2_Infrastructure.Services
         {
             var customer = await _repository.GetByIdAsync(id);
             if (customer == null) return null;
-            return new CustomerDto
-            {
-                CustomerId = customer.CustomerId,
-                Firstname = customer.Firstname,
-                Lastname = customer.Lastname,
-                Email = customer.Email,
-                PhoneNo = customer.PhoneNo,
-                Adress = EntityToDto.TransformAdressToDto(customer.Adress)
 
-            };
+            return AutoMapper<Customer, CustomerDto>.Map(customer);
         }
 
         public async Task<bool> UpdateCustomerAsync(int id, CustomerDto customerDto)
@@ -61,20 +55,9 @@ namespace Labb2_Infrastructure.Services
             {
                 return false;
             }
-
-            CustomerToUpdate.UpdateCustomerFromDTO(customerDto);
+            AutoMapper<CustomerDto, Customer>.Map(customerDto, CustomerToUpdate);
 
             return await _repository.UpdateAsync(CustomerToUpdate);
         }
-
-        //public async Task CreateCustomerAndOrderAsync(CustomerDto customerDto, OrderDto orderDto)
-        //{
-        //    var customer = customerDto.CustomerToEntity();
-        //    //var order = orderDto.OrderToEntity();
-
-        //    //_unitOfWork.Customers.CreateCustomerAsync(customer);
-        //    //_unitOfWork.Orders.
-        //}
-
     }
 }

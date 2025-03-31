@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Labb2_Infrastructure.Repositories
 {
-    public class ReferenceRepository : IReferenceRepository
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly StoreContext _context;
 
-        public ReferenceRepository(StoreContext context)
+        public CategoryRepository(StoreContext context)
         {
             _context = context;
         }

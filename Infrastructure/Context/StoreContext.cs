@@ -33,17 +33,17 @@ public partial class StoreContext : DbContext
         //product
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey((e => e.ProductId)).HasName("PK_Produkter");
+            entity.HasKey((e => e.Id)).HasName("PK_Produkter");
 
-            entity.Property((e => e.ProductId)).HasColumnName("ProductID");
-            entity.Property(e => e.ProductCategoryId).HasColumnName("ProductCategoryID");
-            entity.Property((e => e.ProductDescription)).HasMaxLength(50);
-            entity.Property((e => e.ProductName)).HasMaxLength(50);
+            entity.Property((e => e.Id)).HasColumnName("ProductID");
+            entity.Property(e => e.CategoryId).HasColumnName("ProductCategoryID");
+            entity.Property((e => e.Description)).HasMaxLength(50);
+            entity.Property((e => e.Name)).HasMaxLength(50);
             entity.Property((e => e.Status));
 
             entity.HasOne(d => d.ProductCategory)
                 .WithMany(p => p.Products)
-                .HasForeignKey(d => d.ProductCategoryId)
+                .HasForeignKey(d => d.CategoryId)
                 .HasConstraintName("FK_Produkter_Kategorier");
         });
 
@@ -119,10 +119,10 @@ public partial class StoreContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK_Kategorier");
+            entity.HasKey(e => e.Id).HasName("PK_Kategorier");
 
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.CategoryName).HasMaxLength(50);
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Name).HasMaxLength(50);
         });
 
 

@@ -1,4 +1,5 @@
-﻿using Labb2_Infrastructure.DTOExstension;
+﻿using AutoMapper;
+using Labb2_Infrastructure.DTOExstension;
 using Labb2_Shared.Dtos;
 using Labb2_Shared.Interfaces;
 using Labb2_Shared.Models;
@@ -21,7 +22,7 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<Product> CreateProductAsync(ProductDto productDto)
         {
-            var product = productDto.ProductToEntity();
+            var product = AutoMapper<ProductDto, Product>.Map(productDto);
 
             return await _repository.AddAsync(product);
         }
@@ -33,7 +34,9 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<IEnumerable<ProductDto>> GetProductsAsync()
         {
-            return (await _repository.GetAllAsync()).ProductToDto();
+            var list = await _repository.GetAllAsync();
+            var productDto = AutoMapper<Product, ProductDto>.MapListIenum(list);
+            return productDto;
         }
 
         public async Task<bool> UpdateProductAsync(int id, ProductDto productDto)
@@ -44,7 +47,7 @@ namespace Labb2_Infrastructure.Services
                 return false;
             }
 
-            productToUpdate.UpdateProductFromDTO(productDto);
+            AutoMapper<ProductDto, Product>.Map(productDto, productToUpdate);
 
             return await _repository.UpdateAsync(productToUpdate);
         }

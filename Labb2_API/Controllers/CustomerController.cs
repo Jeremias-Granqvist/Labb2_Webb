@@ -40,7 +40,8 @@ public class CustomerController : ControllerBase
             {
                 return NotFound();
             }
-            return Ok(customer.Orders);  // Return only the orders related to the customer
+            
+                return Ok(customer.Orders);  // Return only the orders related to the customer
         }
         catch (Exception ex)
         {

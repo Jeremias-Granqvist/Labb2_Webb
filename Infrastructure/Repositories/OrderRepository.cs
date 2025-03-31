@@ -63,5 +63,10 @@ namespace Labb2_Infrastructure.Repositories
                 .Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
+
+        public Task<bool> UpdateAsync(Order order)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
