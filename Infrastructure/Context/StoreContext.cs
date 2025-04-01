@@ -1,4 +1,5 @@
-﻿using Labb2_Shared.Models;
+﻿using Labb2_Infrastructure.Authentication.Models;
+using Labb2_Shared.Models;
 using Microsoft.EntityFrameworkCore;
 namespace Labb2_Infrastructure;
 
@@ -18,7 +19,7 @@ public partial class StoreContext : DbContext
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-
+    public DbSet<ApplicationUser> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -29,6 +30,14 @@ public partial class StoreContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+
+        modelBuilder.Entity<ApplicationUser>(entity =>
+        {
+            entity.HasKey(e => e.Email).HasName("PK_Users");
+            entity.Property(e => e.Password).HasColumnName("Password");
+            entity.Property(e => e.Name);
+        });
 
         //product
         modelBuilder.Entity<Product>(entity =>
