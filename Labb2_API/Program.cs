@@ -3,7 +3,6 @@ using Labb2_API.Controllers;
 using Labb2_Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Labb2_Infrastructure;
 using Labb2_Shared.Interfaces;
 using Labb2_Infrastructure.Repositories;
 using Labb2_Infrastructure.Services;
@@ -11,6 +10,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Labb2_Infrastructure.Authentication.Repos;
+using Labb2_Infrastructure.Authentication.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Labb2_Infrastructure.Authentication.States;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,11 +51,17 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
 });
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAccount, Account>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

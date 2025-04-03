@@ -1,27 +1,45 @@
 using Labb2_Blazor.Components;
 using Labb2_Blazor.Dto;
 using Labb2_Blazor.State;
+using Labb2_Infrastructure.Authentication.Services;
+using Labb2_Infrastructure.Authentication.States;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
 builder.Services.AddSingleton<AppState>();
 
 builder.Services.AddHttpClient("Api", client =>
 {
      client.BaseAddress = new Uri("https://localhost:7002");
-    //var BaseUrl = builder.Configuration["BaseUrl"];
-    //client.BaseAddress = new Uri(BaseUrl); 
+
 });
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = "Bearer";
+})
+.AddJwtBearer("Bearer", options =>
+{
+    options.Authority = "";
+    options.Audience = "my-api";
+    options.RequireHttpsMetadata = true;
+});
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddSingleton<IJSRuntime, JSRuntime>();
 
 
 var app = builder.Build();

@@ -1,5 +1,4 @@
-﻿using Labb2_Infrastructure.Authentication.Models;
-using Labb2_Shared.Models;
+﻿using Labb2_Shared.Models;
 using Microsoft.EntityFrameworkCore;
 namespace Labb2_Infrastructure;
 
@@ -15,7 +14,7 @@ public partial class StoreContext : DbContext
 
     public virtual DbSet<Adress> Adresses { get; set; }
     public virtual DbSet<Category> Categories { get; set; }
-    public virtual DbSet<Customer> Customers { get; set; }
+   // public virtual DbSet<Customer> Customers { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
@@ -34,9 +33,39 @@ public partial class StoreContext : DbContext
 
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
-            entity.HasKey(e => e.Email).HasName("PK_Users");
-            entity.Property(e => e.Password).HasColumnName("Password");
-            entity.Property(e => e.Name);
+            entity.HasKey(e => e.UserId).HasName("PK_Users");
+            entity.Property(e => e.UserId)
+            .ValueGeneratedOnAdd()
+            .HasColumnName("UserId");
+
+            entity.Property((e => e.Email))
+            .IsRequired()
+            .HasMaxLength(255);
+
+            entity.Property(e => e.FirstName)
+            .HasMaxLength(50);
+            entity.Property(e => e.LastName)
+            .HasMaxLength(50);
+
+            entity.Property(e => e.Role)
+            .HasMaxLength(50);
+
+            entity.Property(e => e.Password);
+
+            entity.Property(e => e.AddressId).HasColumnName("AdressID");
+
+            entity.HasOne(d => d.Adress)
+            .WithMany()
+            .HasForeignKey(d => d.AddressId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+
+            entity.HasMany(c => c.Orders)
+            .WithOne(o => o.User)
+            .HasForeignKey(o => o.UserID)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(e => e.Email).IsUnique();
         });
 
         //product
@@ -80,38 +109,35 @@ public partial class StoreContext : DbContext
             .Property(oi => oi.Price);
 
         //customer
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.HasKey(e => e.CustomerId).HasName("PK_Customers");
-            entity.Property(e => e.CustomerId)
-            .ValueGeneratedOnAdd()
-            .HasColumnName("CustomerId");
+        //modelBuilder.Entity<Customer>(entity =>
+        //{
+        //    entity.HasKey(e => e.CustomerId).HasName("PK_Customers");
+        //    entity.Property(e => e.CustomerId)
+        //    .ValueGeneratedOnAdd()
+        //    .HasColumnName("CustomerId");
 
-            entity.Property(e => e.AdressId).HasColumnName("AdressID");
-            entity.Property((e => e.Email)).HasMaxLength(50);
-            entity.Property((e => e.Firstname)).HasMaxLength(50);
-            entity.Property((e => e.Lastname)).HasMaxLength(50);
+        //    entity.Property(e => e.AdressId).HasColumnName("AdressID");
+        //    entity.Property((e => e.Email)).HasMaxLength(50);
+        //    entity.Property((e => e.Firstname)).HasMaxLength(50);
+        //    entity.Property((e => e.Lastname)).HasMaxLength(50);
 
-            entity.HasOne(d => d.Adress)
-            .WithMany(p => p.Customers)
-            .HasForeignKey(d => d.AdressId)
-            .HasConstraintName("FK_Customers_Adresses");
+        //    entity.HasOne(d => d.Adress);
 
-            entity.HasMany(c => c.Orders)
-            .WithOne(o => o.Customer)
-            .HasForeignKey(o => o.CustomerId)
-            .OnDelete(DeleteBehavior.SetNull);
+        //    entity.HasMany(c => c.Orders)
+        //    .WithOne(o => o.User)
+        //    .HasForeignKey(o => o.CustomerId)
+        //    .OnDelete(DeleteBehavior.SetNull);
     
-        });
+        //});
         
         //order
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(o => o.OrderId);
 
-            entity.HasOne(o => o.Customer)
+            entity.HasOne(o => o.User)
             .WithMany(c => c.Orders)
-            .HasForeignKey(o => o.CustomerId)
+            .HasForeignKey(o => o.UserID)
             .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(o => o.DateOfOrder).IsRequired();

@@ -16,36 +16,36 @@ namespace Labb2_Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<Customer> GetCustomerWithAdressAsync(int customerId)
+        public async Task<ApplicationUser> GetUsersWithAdressAsync(int customerId)
         {
-            return await _context.Customers
+            return await _context.Users
                 .Include(c => c.Adress)  // Eagerly load the Address
-                .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+                .FirstOrDefaultAsync(c => c.UserId == customerId);
         }
-        public async Task<Customer> GetCustomerWithOrdersAsync(int customerId)
+        public async Task<ApplicationUser> GetUsersWithOrdersAsync(int customerId)
         {
-            return await _context.Customers
+            return await _context.Users
                 .Include(c => c.Adress)  // Eagerly load the Address
                 .Include(c => c.Orders)   // Eagerly load the Orders
                 .ThenInclude(o => o.OrderItems)  // Eagerly load OrderItems
                 .ThenInclude(oi => oi.Product)  // Eagerly load Products for OrderItems
-                .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+                .FirstOrDefaultAsync(c => c.UserId == customerId);
         }
 
-        public async Task<Customer> CreateCustomerAsync(Customer customer)
+        public async Task<ApplicationUser> CreateUserAsync(ApplicationUser customer)
         {
-            _context.Customers.Add(customer);
+            _context.Users.Add(customer);
             await _context.SaveChangesAsync();
             return customer;
         }
-        public IQueryable<Customer> GetQueryable()
+        public IQueryable<ApplicationUser> GetQueryable()
         {
-            return _context.Set<Customer>().AsQueryable();
+            return _context.Set<ApplicationUser>().AsQueryable();
         }
 
-        public async Task<bool> DeleteCustomerAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
-            var customer = _context.Customers.FindAsync(id);
+            var customer = _context.Users.FindAsync(id);
             if (customer == null)
             {
                 return false;
@@ -55,19 +55,18 @@ namespace Labb2_Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Customer>> GetCustomerAsync()
+        public async Task<IEnumerable<ApplicationUser>> GetUserAsync()
         {
-            return await _context.Customers.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
-        public async Task<IEnumerable<Customer>> GetAllAsync()
+        public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
         {
-            return await _context.Customers
+            return await _context.Users
                 .Include(c => c.Orders)
                 .Include(a => a.Adress)
                 .ToListAsync();
         }
-
 
     }
 }

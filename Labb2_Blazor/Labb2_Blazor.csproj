@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Labb2_Infrastructure.csproj" />
     <ProjectReference Include="..\Labb2_API\Labb2_API.csproj" />
     <ProjectReference Include="..\Labb2_Shared\Labb2_Shared.csproj" />
   </ItemGroup>

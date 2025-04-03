@@ -5,6 +5,8 @@ using Labb2_Shared.Models;
 using Labb2_Infrastructure;
 using Labb2_Shared.Interfaces;
 using Labb2_Shared.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using System.Net.Http;
 
 namespace Labb2_API.Controllers;
 
@@ -21,6 +23,7 @@ public class ProductController : ControllerBase
 
     //GET (hämta med API)
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
     {
         var products = await _productService.GetProductsAsync();
@@ -31,8 +34,10 @@ public class ProductController : ControllerBase
 
     //POST (skapa med API)
     [HttpPost]
+    //[Authorize]
     public async Task<ActionResult<Product>> CreateProduct([FromBody]ProductDto product)
     {
+
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);

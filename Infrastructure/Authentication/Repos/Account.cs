@@ -1,7 +1,9 @@
 ﻿using BCrypt.Net;
 using Labb2_Infrastructure.Authentication.DTOs;
-using Labb2_Infrastructure.Authentication.Models;
 using Labb2_Infrastructure.Authentication.Responses;
+using Labb2_Infrastructure.Authentication.States;
+using Labb2_Shared.Interfaces;
+using Labb2_Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +25,7 @@ namespace Labb2_Infrastructure.Authentication.Repos
         private readonly StoreContext _context;
         private readonly IConfiguration _config;
 
+
         public Account(StoreContext context, IConfiguration config)
         {
             _context = context;
@@ -42,6 +45,16 @@ namespace Labb2_Infrastructure.Authentication.Repos
 
         }
 
+        public LoginResponse RefreshToken(UserSession userSession)
+        {
+            CustomUserClaim customUserClaim = DecryptJWTService.DecryptToken(userSession.JWTToken);
+            if (customUserClaim is null) return new LoginResponse(false, "Incorrect token");
+
+            string newToken = GenerateToken(new ApplicationUser()
+                { FirstName = customUserClaim.FirstName, Email = customUserClaim.Email, Role = customUserClaim.Role });
+            return new LoginResponse(true, "New token", newToken);
+        }
+
         public async Task<RegistrationResponse> RegisterAsync(RegisterDTO model)
         {
             var findUser = await GetUser(model.Email);
@@ -50,8 +63,9 @@ namespace Labb2_Infrastructure.Authentication.Repos
             _context.Users.Add(
                 new ApplicationUser()
                 {
-                    Name = model.Name,
+                    FirstName = model.Name,
                     Email = model.Email,
+                    Role = model.Role,
                     Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
                 });
 
@@ -66,8 +80,9 @@ namespace Labb2_Infrastructure.Authentication.Repos
             var userClaims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Email),
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Name, user.FirstName!),
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.Role, user.Role!)
             };
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"]!,
@@ -81,6 +96,8 @@ namespace Labb2_Infrastructure.Authentication.Repos
 
         private async Task<ApplicationUser> GetUser(string email) 
             => await _context.Users.FirstOrDefaultAsync(e => e.Email == email);
+
+
 
     }
 }

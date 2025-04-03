@@ -6,5 +6,8 @@ using System.Threading.Tasks;
 
 namespace Labb2_Infrastructure.Authentication.DTOs
 {
-    public record CustomUserClaim(string FirstName = null!, string Email = null!, string Role = null!);
+    public class UserSession
+    {
+        public string JWTToken { get; set; } = "";
+    }
 }

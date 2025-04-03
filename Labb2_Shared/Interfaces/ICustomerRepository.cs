@@ -9,13 +9,13 @@ namespace Labb2_Shared.Interfaces
 {
     public interface ICustomerRepository
     {
-        Task<Customer> CreateCustomerAsync(Customer customer);
+        Task<ApplicationUser> CreateUserAsync(ApplicationUser customer);
 
-        Task<Customer> GetCustomerWithAdressAsync(int customerId);
-        Task<Customer> GetCustomerWithOrdersAsync(int customerId);
+        Task<ApplicationUser> GetUsersWithAdressAsync(int customerId);
+        Task<ApplicationUser> GetUsersWithOrdersAsync(int customerId);
 
-        Task<IEnumerable<Customer>> GetCustomerAsync();
+        Task<IEnumerable<ApplicationUser>> GetUserAsync();
 
-        Task<bool> DeleteCustomerAsync(int id);
+        Task<bool> DeleteUserAsync(int id);
     }
 }

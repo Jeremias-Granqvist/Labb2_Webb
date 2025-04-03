@@ -22,7 +22,6 @@ namespace Labb2_Infrastructure.Repositories
         public async Task<Adress> GetAddressWithCustomersAsync(int addressId)
         {
             return await _context.Adresses
-                .Include(a => a.Customers)  // Eagerly load the Customers at the Address
                 .FirstOrDefaultAsync(a => a.AdressId == addressId);
         }
 
@@ -54,7 +53,7 @@ namespace Labb2_Infrastructure.Repositories
 
         public async Task<IEnumerable<Adress>> GetAllAdressAsync()
         {
-            return await _context.Adresses.Include(c => c.Customers).ToListAsync();        
+            return await _context.Adresses.ToListAsync();        
         }
     }
 }

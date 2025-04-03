@@ -1,0 +1,55 @@
+﻿@page "/Register"
+@rendermode InteractiveServer
+@inject IAccountService accountService
+@inject IJSRuntime js
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-4">
+			<h2>Register new account</h2>
+			<EditForm model="@RegisterNew" OnValidSubmit="RegisterClicked">
+				<DataAnnotationsValidator />
+				<div class="form-group">
+					<label class="form-label"> Name: </label>
+					<InputText @bind-Value="RegisterNew.Name" class="form-control"></InputText>
+				</div>
+				<div class="form-group">
+					<label class="form-label"> Email: </label>
+					<InputText @bind-Value="RegisterNew.Email" class="form-control"></InputText>
+				</div>
+				<div class="form-group mt-3">
+					<label class="form-label">Password</label>
+					<InputText @bind-Value="RegisterNew.Password" class="form-control"></InputText>
+				</div>
+				<div class="form-group mt-3">
+					<label class="form-label">Confirm Password</label>
+					<InputText @bind-Value="RegisterNew.ConfirmPassword" class="form-control"></InputText>
+				</div>
+
+				<div class="form-group mt-3">
+					<button class="btn btn-primary" type="submit">Register</button>
+				</div>
+				<ValidationSummary />
+			</EditForm>
+		</div>
+	</div>
+</div>
+@code {
+	public RegisterDTO RegisterNew = new();
+
+	async Task RegisterClicked()
+	{
+		RegistrationResponse response = await accountService.RegisterAsync(RegisterNew);
+		if (!response.Flag)
+		{
+			await js.InvokeVoidAsync("alert", response.Message);
+			return;
+		}
+		await js.InvokeVoidAsync("alert", response.Message);
+		RegisterNew = new();
+		return;
+
+	}
+}

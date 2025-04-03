@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using static Labb2_Infrastructure.Authentication.Responses.CustomResponses;
 
-namespace Labb2_Infrastructure.Authentication.Repos
+namespace Labb2_Infrastructure.Authentication.Services
 {
-    public interface IAccount
+    public interface IAccountService
     {
         Task<RegistrationResponse> RegisterAsync(RegisterDTO model);
+        Task<LoginResponse> RefreshToken(UserSession userSession);
         Task<LoginResponse> LoginAsync(LoginDTO model);
-        LoginResponse RefreshToken(UserSession userSession);
     }
 }

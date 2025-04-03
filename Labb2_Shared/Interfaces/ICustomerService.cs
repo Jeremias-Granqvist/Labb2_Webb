@@ -10,11 +10,13 @@ namespace Labb2_Shared.Interfaces
 {
     public interface ICustomerService
     {
-        Task<Customer> CreateCustomerAsync(CustomerDto customerDto);
-        Task<IEnumerable<CustomerDto>> GetAllCustomerAsync();
-        Task<CustomerDto> GetCustomerByIdAsync(int id);
-        Task<bool> DeleteCustomerAsync(int id);
+        Task<ApplicationUser> CreateUserAsync(ApplicationUserDTO customerDto);
+        Task<IEnumerable<ApplicationUserDTO>> GetAllUsersAsync();
+        Task<ApplicationUserDTO> GetUsersByIdAsync(int id);
+        Task<ApplicationUser> GetUsersWithAdressAsync(int customerId);
+        Task<ApplicationUser> GetUsersWithOrdersAsync(int customerId);
+        Task<bool> DeleteUserAsync(int id);
 
-        Task<bool> UpdateCustomerAsync(int id, CustomerDto customerUpdateDto);
+        Task<bool> UpdateUserAsync(int id, ApplicationUserDTO customerUpdateDto);
     }
 }

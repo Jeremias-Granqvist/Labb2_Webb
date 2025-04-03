@@ -8,6 +8,7 @@ using Labb2_Infrastructure.Services;
 using Labb2_Shared.Dtos;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Labb2_Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Labb2_API.Controllers;
 
@@ -15,27 +16,26 @@ namespace Labb2_API.Controllers;
 [ApiController]
 public class CustomerController : ControllerBase
 {
-    private readonly ICustomerRepository _customerRepository;
     private readonly ICustomerService _customerService;
     public CustomerController(ICustomerRepository customerRepo, ICustomerService customerService)
     {
-        _customerRepository = customerRepo;
         _customerService = customerService;
     }
 
     //GET (hämta med API)
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
+    [Authorize(Roles ="Admin")]
+    public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
     {
-        var customer = await _customerService.GetAllCustomerAsync();
+        var customer = await _customerService.GetAllUsersAsync();
         return Ok(customer);
     }
     [HttpGet("{id}/orders")]
-    public async Task<IActionResult> GetCustomerWithOrders(int id)
+    public async Task<IActionResult> GetUsersWithOrders(int id)
     {
         try
         {
-            var customer = await _customerRepository.GetCustomerWithOrdersAsync(id);
+            var customer = await _customerService.GetUsersWithOrdersAsync(id);
             if (customer == null)
             {
                 return NotFound();
@@ -52,9 +52,9 @@ public class CustomerController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetCustomerWithAddress(int id)
+    public async Task<IActionResult> GetUsersWithAddress(int id)
     {
-        var customer = await _customerRepository.GetCustomerWithAdressAsync(id);
+        var customer = await _customerService.GetUsersWithAdressAsync(id);
         if (customer == null)
         {
             return NotFound();
@@ -64,29 +64,29 @@ public class CustomerController : ControllerBase
 
     //POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<Customer>> CreateCustomer(CustomerDto customer)
+    public async Task<ActionResult<ApplicationUser>> CreateUser(ApplicationUserDTO customer)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var result = await _customerService.CreateCustomerAsync(customer);
+        var result = await _customerService.CreateUserAsync(customer);
         return Created();
     }
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCustomer(int id, CustomerDto customer)
+    public async Task<IActionResult> PutUser(int id, ApplicationUserDTO customer)
     {
-        await _customerService.UpdateCustomerAsync(id, customer);
+        await _customerService.UpdateUserAsync(id, customer);
         return Ok();
     }
 
     // DELETE (Ta bort med API)
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCustomer(int id)
+    public async Task<IActionResult> DeleteUser(int id)
     {
-        var customer = await _customerService.DeleteCustomerAsync(id);
+        var customer = await _customerService.DeleteUserAsync(id);
         if (customer == true)
         {
             return Ok();

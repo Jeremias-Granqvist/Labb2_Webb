@@ -1,6 +1,9 @@
 ﻿@page "/allcustomers"
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
 
+<AuthorizeView Roles="Admin" Context="authContext">
+    <Authorized>
 <h3>AllCustomers</h3>
 <div>
 	<input type="text" @bind="searchQuery" placeholder="Search by customer name" class="form-control" />
@@ -22,7 +25,7 @@
 			@foreach (var customer in filteredCustomers)
 			{
 				<tr>
-					<td>@customer.Customer.CustomerId</td>
+					<td>@customer.Customer.UserId</td>
 					<td>@customer.Customer.Firstname</td>
 					<td>@customer.Customer.Lastname</td>
                     <td>@customer.Customer.Email</td>
@@ -42,13 +45,11 @@ else
 {
     <div class="mt-3">
         <h4>Edit Product</h4>
-        <EditForm Model="CustomerToEdit" OnValidSubmit="UpdateCustomer">
+        <EditForm Model="CustomerToEdit" OnValidSubmit="UpdateCustomer" EditContext="@editContext">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
-
-
-            <div class="form-group">
+            <div class="form-group" >
                 <label for="name">Firstname</label>
                 <input type="text" id="Firstname" class="form-control" @bind="CustomerToEdit.Firstname" />
             </div>
@@ -113,4 +114,9 @@ else
         </EditForm>
     </div>
 }
+    </Authorized>
+    <NotAuthorized>
+        <p>I don't know how you got here, but you shouldn't see this.</p>
+    </NotAuthorized>
+</AuthorizeView >
 

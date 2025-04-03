@@ -13,6 +13,7 @@ namespace Labb2_Infrastructure.Services
     public class OrderService : IOrderService
     {
         private readonly IRepository<Order> _repository;
+
         public OrderService(IRepository<Order> repository)
         {
             _repository = repository;

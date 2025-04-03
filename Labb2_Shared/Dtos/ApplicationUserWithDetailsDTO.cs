@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Labb2_Shared.Dtos
 {
-    public class CustomerWithDetailsDto
+    public class ApplicationUserWithDetailsDTO
     {
-        public CustomerDto Customer { get; set; }
+        public ApplicationUserDTO Customer { get; set; }
         public AdressDto Adress { get; set; }
         public List<OrderWithDetailsDto> Orders { get; set; } = new List<OrderWithDetailsDto>();
     }

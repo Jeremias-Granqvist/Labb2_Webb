@@ -21,7 +21,7 @@ namespace Labb2_Infrastructure.Repositories
         public async Task<Order> GetOrderWithCustomerAndItemsAsync(int orderId)
         {
             return await _context.Orders
-                .Include(o => o.Customer)  // Eagerly load the Customer
+                .Include(o => o.User)  // Eagerly load the user
                 .Include(o => o.OrderItems) // Eagerly load OrderItems
                 .ThenInclude(oi => oi.Product)  // Eagerly load the Product for each OrderItem
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
@@ -51,7 +51,7 @@ namespace Labb2_Infrastructure.Repositories
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
             return await _context.Orders
-                .Include(o => o.Customer)
+                .Include(o => o.User)
                 .Include(o => o.OrderItems)
                 .ToListAsync();
         }
@@ -59,7 +59,7 @@ namespace Labb2_Infrastructure.Repositories
         public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             return await _context.Orders
-                .Include(o => o.Customer)
+                .Include(o => o.User)
                 .Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
