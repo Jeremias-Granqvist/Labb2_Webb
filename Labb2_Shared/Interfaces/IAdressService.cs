@@ -11,7 +11,7 @@ namespace Labb2_Shared.Interfaces
     public interface IAdressService
     {
         Task<Adress> CreateAdressAsync(AdressDto adressDto);
-        Task<IEnumerable<AdressDto>> GetAllAdressAsync();
+        Task<List<AdressDto>> GetAllAdressAsync();
         Task<AdressDto> GetAdressByIdAsync(int id);
         Task<bool> DeleteAdressAsync(int id);
 

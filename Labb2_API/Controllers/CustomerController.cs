@@ -16,45 +16,42 @@ namespace Labb2_API.Controllers;
 [ApiController]
 public class CustomerController : ControllerBase
 {
-    private readonly ICustomerService _customerService;
-    public CustomerController(ICustomerRepository customerRepo, ICustomerService customerService)
+    private readonly ICustomerRepository _customerRepository;
+
+    public CustomerController(ICustomerRepository customerRepository)
     {
-        _customerService = customerService;
+        _customerRepository = customerRepository;
     }
 
-    //GET (hämta med API)
+    // GET (hämta med API)
     [HttpGet]
-    [Authorize(Roles ="Admin")]
-    public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
+    public async Task<ActionResult<IEnumerable<ApplicationUserDTO>>> GetAllUsers()
     {
-        var customer = await _customerService.GetAllUsersAsync();
-        return Ok(customer);
+        
+        var customers = await _customerRepository.GetAllUserAsync();
+        return Ok(customers);
     }
+
     [HttpGet("{id}/orders")]
     public async Task<IActionResult> GetUsersWithOrders(int id)
     {
-        try
-        {
-            var customer = await _customerService.GetUsersWithOrdersAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            
-                return Ok(customer.Orders);  // Return only the orders related to the customer
-        }
-        catch (Exception ex)
-        {
-            // Log the exception and return 500 if something goes wrong
-            Console.WriteLine($"Error fetching orders for customer {id}: {ex.Message}");
-            return StatusCode(500, "Internal server error");
-        }
+        var result = _customerRepository.GetUsersWithOrdersAsync(id);
+        return Ok(result);
+
     }
+
+    [HttpGet("{email}")]
+    public async Task<IActionResult> GetUserFromEmail(string email)
+    {
+        var result = await _customerRepository.GetUserFromEmailAsync(email);
+        return Ok(result);
+    }
+
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUsersWithAddress(int id)
     {
-        var customer = await _customerService.GetUsersWithAdressAsync(id);
+        var customer = await _customerRepository.GetUsersWithAdressAsync(id);
         if (customer == null)
         {
             return NotFound();
@@ -62,23 +59,35 @@ public class CustomerController : ControllerBase
         return Ok(customer);
     }
 
-    //POST (skapa med API)
+    // POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<ApplicationUser>> CreateUser(ApplicationUserDTO customer)
+    public async Task<ActionResult<ApplicationUser>> CreateUser(ApplicationUser customer)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var result = await _customerService.CreateUserAsync(customer);
-        return Created();
+        
+        var createdCustomer = await _customerRepository.CreateUserAsync(customer);
+
+        if (createdCustomer == null)
+        {
+            return BadRequest("Failed to create user.");
+        }
+
+        return CreatedAtAction(nameof(GetUsersWithAddress), new { id = createdCustomer.UserId }, createdCustomer);
     }
 
-    //PUT (uppdatera med API)
+    // PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, ApplicationUserDTO customer)
+    public async Task<IActionResult> PutUser(int id, ApplicationUser customer)
     {
-        await _customerService.UpdateUserAsync(id, customer);
+        var updated = await _customerRepository.UpdateUserAsync(id, customer);
+        if (updated == null)
+        {
+            return NotFound(); 
+        }
+
         return Ok();
     }
 
@@ -86,8 +95,8 @@ public class CustomerController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var customer = await _customerService.DeleteUserAsync(id);
-        if (customer == true)
+        var success = await _customerRepository.DeleteUserAsync(id);
+        if (success)
         {
             return Ok();
         }
@@ -95,7 +104,5 @@ public class CustomerController : ControllerBase
         {
             return NotFound();
         }
-
     }
-
 }

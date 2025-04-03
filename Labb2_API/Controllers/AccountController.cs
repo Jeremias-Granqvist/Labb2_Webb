@@ -31,6 +31,12 @@ public class AccountController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        return Ok(new { message = "logged out successfully" });
+    }
+
     [HttpPost("refresh-token")]
     [AllowAnonymous]
     public ActionResult<LoginResponse> RefreshToken(UserSession model)

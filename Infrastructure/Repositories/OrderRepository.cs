@@ -64,9 +64,20 @@ namespace Labb2_Infrastructure.Repositories
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
-        public Task<bool> UpdateAsync(Order order)
+        public Task<Order> UpdateOrderAsync(int id, Order order)
         {
-            throw new NotImplementedException();
+            var orderToUpdate = _context.Orders.FirstOrDefault(o => o.OrderId == id);
+
+            if (orderToUpdate == null)
+            {
+                return Task.FromResult<Order>(null);
+            }
+            orderToUpdate.DateOfOrder = order.DateOfOrder;
+            orderToUpdate.OrderItems = order.OrderItems;
+
+            _context.SaveChangesAsync();
+
+            return Task.FromResult(orderToUpdate);
         }
     }
 }

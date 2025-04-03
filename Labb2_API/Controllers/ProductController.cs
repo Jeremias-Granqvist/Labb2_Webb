@@ -7,6 +7,7 @@ using Labb2_Shared.Interfaces;
 using Labb2_Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
+using Labb2_Infrastructure.DTOExstension;
 
 namespace Labb2_API.Controllers;
 
@@ -14,10 +15,10 @@ namespace Labb2_API.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly IProductService _productService;
-    public ProductController(IProductService productService)
+    private readonly IProductRepository _productRepository;
+    public ProductController(IProductRepository productRepo)
     {
-        _productService = productService;
+        _productRepository = productRepo;
     }
 
 
@@ -26,7 +27,7 @@ public class ProductController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
     {
-        var products = await _productService.GetProductsAsync();
+        var products = await _productRepository.GetProductsAsync();
             return Ok(products);
     }
 
@@ -37,18 +38,18 @@ public class ProductController : ControllerBase
     //[Authorize]
     public async Task<ActionResult<Product>> CreateProduct([FromBody]ProductDto product)
     {
-
+         var result = AutoMapper<ProductDto, Product>.Map(product);
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var result = await _productService.CreateProductAsync(product);
+        await _productRepository.CreateProductAsync(result);
         return Created();
     }
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, [FromBody] ProductDto product)
+    public async Task<IActionResult> PutProduct(int id, [FromBody] Product product)
     {
         Console.WriteLine($"Received ID from URL: {id}");
         Console.WriteLine($"Received Product ID from body: {product.Id}");
@@ -65,7 +66,7 @@ public class ProductController : ControllerBase
         }
 
         // Update the product
-        await _productService.UpdateProductAsync(id, product);
+        await _productRepository.UpdateProductAsync(id, product);
 
         return Ok();
     }
@@ -74,7 +75,7 @@ public class ProductController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
-        var product = await _productService.DeleteProductAsync(id);
+        var product = await _productRepository.DeleteProductAsync(id);
         if (product == true)
         {
             return Ok();

@@ -13,5 +13,6 @@ namespace Labb2_Infrastructure.Authentication.Services
         Task<RegistrationResponse> RegisterAsync(RegisterDTO model);
         Task<LoginResponse> RefreshToken(UserSession userSession);
         Task<LoginResponse> LoginAsync(LoginDTO model);
+        public Task Logout();
     }
 }

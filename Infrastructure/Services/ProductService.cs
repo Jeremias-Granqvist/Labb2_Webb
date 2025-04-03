@@ -10,52 +10,68 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http.Json;
 
 namespace Labb2_Infrastructure.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IRepository<Product> _repository;
         private readonly HttpClient _httpClient;
 
-        public ProductService(IRepository<Product> repository, HttpClient httpClient)
+        public ProductService(IHttpClientFactory httpClient)
         {
-            _repository = repository;
-            _httpClient = httpClient;
+
+            _httpClient = httpClient.CreateClient("Api");
         }
 
         public async Task<Product> CreateProductAsync(ProductDto productDto)
         {
-            
-
             var product = AutoMapper<ProductDto, Product>.Map(productDto);
 
-            return await _repository.AddAsync(product);
+            var response = await _httpClient.PostAsJsonAsync("api/product", product);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Product>();
+            }
+            return null;
+
         }
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            return await _repository.DeleteAsync(id);
+            var response = await _httpClient.DeleteAsync($"api/product/{id}");
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProductsAsync()
+        public async Task<List<ProductDto>> GetProductsAsync()
         {
-            var list = await _repository.GetAllAsync();
-            var productDto = AutoMapper<Product, ProductDto>.MapListIenum(list);
-            return productDto;
+            var response = await _httpClient.GetFromJsonAsync<List<Product>>("api/product");
+
+            if (response == null)
+            {
+                return new List<ProductDto>();
+            }
+
+            var result = AutoMapper<Product, ProductDto>.MapListIenum(response).ToList();
+
+            return result;
         }
 
         public async Task<bool> UpdateProductAsync(int id, ProductDto productDto)
         {
-            var productToUpdate = await _repository.GetByIdAsync(id);
+            var productToUpdate = await _httpClient.GetFromJsonAsync<Product>($"api/product/{id}");
+
             if (productToUpdate == null)
             {
                 return false;
             }
 
-            AutoMapper<ProductDto, Product>.Map(productDto, productToUpdate);
+            productToUpdate = AutoMapper<ProductDto, Product>.Map(productDto, productToUpdate);
 
-            return await _repository.UpdateAsync(productToUpdate);
+            var response = await _httpClient.PutAsJsonAsync($"api/product/{id}", productToUpdate);
+
+            return response.IsSuccessStatusCode;
         }
     }
 }

@@ -10,11 +10,10 @@ namespace Labb2_API.Controllers;
 [ApiController]
 public class AdressController : ControllerBase
 {
-    private readonly IAdressService _adressService;
+
     private readonly IAdressRepository _adressRepository;
-    public AdressController(IAdressService adressService, IAdressRepository adressRepository)
+    public AdressController(IAdressRepository adressRepository)
     {
-        _adressService = adressService;
         _adressRepository = adressRepository;
     }
 
@@ -22,7 +21,7 @@ public class AdressController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Adress>>> GetAllAdress()
     {
-        var adress = await _adressService.GetAllAdressAsync();
+        var adress = await _adressRepository.GetAllAdressAsync();
         return Ok(adress);
     }
     [HttpGet("{id}")]
@@ -39,21 +38,22 @@ public class AdressController : ControllerBase
 
     //POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<Adress>> CreateAdress(AdressDto adressDto)
+    public async Task<ActionResult<Adress>> CreateAdress(Adress adress)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var result = await _adressService.CreateAdressAsync(adressDto);
+        var result = await _adressRepository.CreateAdressAsync(adress);
         return Created();
     }
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAdress(int id, AdressDto adressDto)
+    public async Task<IActionResult> PutAdress(int id, Adress adress)
     {
-        await _adressService.UpdateAdressAsync(id, adressDto);
+        
+        await _adressRepository.UpdateAdressAsync(id, adress);
         return Ok();
     }
 
@@ -61,7 +61,7 @@ public class AdressController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAdress(int id)
     {
-        var adress = await _adressService.DeleteAdressAsync(id);
+        var adress = await _adressRepository.DeleteAdressAsync(id);
         if (adress == true)
         {
             return Ok();

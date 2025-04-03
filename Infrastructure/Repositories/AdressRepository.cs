@@ -55,5 +55,23 @@ namespace Labb2_Infrastructure.Repositories
         {
             return await _context.Adresses.ToListAsync();        
         }
+
+        public Task<Adress> UpdateAdressAsync(int id, Adress adress)
+        {
+            var adressToUpdate = _context.Adresses.FirstOrDefault(a => a.AdressId == id);
+
+            if (adressToUpdate == null)
+            {
+                return Task.FromResult<Adress>(null);
+            }
+            adressToUpdate.StreetName = adress.StreetName;
+            adressToUpdate.City = adress.City;
+            adressToUpdate.ZipCode = adress.ZipCode;
+            adressToUpdate.Country = adress.Country;
+
+            _context.SaveChangesAsync();
+            return Task.FromResult(adressToUpdate);
+
+        }
     }
 }

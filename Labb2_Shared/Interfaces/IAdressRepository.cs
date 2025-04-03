@@ -1,4 +1,5 @@
-﻿using Labb2_Shared.Models;
+﻿using Labb2_Shared.Dtos;
+using Labb2_Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace Labb2_Shared.Interfaces
         Task<IEnumerable<Adress>> GetAllAdressAsync();
         Task<Adress> GetAdressByIdAsync(int id);
         Task<bool> DeleteAdressAsync(int id);
+
+        Task<Adress> UpdateAdressAsync(int id, Adress adress);
     }
 }

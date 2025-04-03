@@ -1,6 +1,7 @@
 using Labb2_Blazor.Components;
 using Labb2_Blazor.Dto;
 using Labb2_Blazor.State;
+using Labb2_Infrastructure.Authentication.Repos;
 using Labb2_Infrastructure.Authentication.Services;
 using Labb2_Infrastructure.Authentication.States;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -10,13 +11,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
+using Labb2_Shared.Interfaces;
+using Labb2_Infrastructure.Services;
+using Labb2_Shared.Models;
+using Labb2_Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<AppState>();
 
@@ -37,10 +43,18 @@ builder.Services.AddAuthentication(options =>
     options.RequireHttpsMetadata = true;
 });
 
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddSingleton<IJSRuntime, JSRuntime>();
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IRepositoryService<>), typeof(RepositoryService<>));
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderitemService, OrderItemService>();
+builder.Services.AddScoped<IAdressService, AdressService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 var app = builder.Build();
 

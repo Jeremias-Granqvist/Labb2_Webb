@@ -5,12 +5,15 @@ using Labb2_Infrastructure.Authentication.States;
 using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using Microsoft.AspNetCore.Components;
+using Blazored.LocalStorage;
 
 namespace Labb2_Infrastructure.Authentication.Services
 {
     public class AccountService : IAccountService
     {
         private readonly HttpClient _httpClient;
+
 
         public AccountService(IHttpClientFactory clientFactory)
         {
@@ -26,6 +29,13 @@ namespace Labb2_Infrastructure.Authentication.Services
 
             var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
             return result!;
+
+        }
+
+        public async Task Logout()
+        {
+
+            await _httpClient.PostAsync("api/account/logout", null);
 
         }
 

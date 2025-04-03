@@ -1,12 +1,14 @@
 using Labb2_Blazor.State;
 using Labb2_Infrastructure.Authentication.States;
 using Labb2_Shared.Dtos;
+using Labb2_Shared.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Security.AccessControl;
 
 namespace Labb2_Blazor.Components.Pages
 {
-    public partial class AllCustomers
+    public partial class AllCustomers : IDisposable
     {
         [Inject]
         public IHttpClientFactory HttpClientFactory { get; set; } = default;
@@ -15,21 +17,18 @@ namespace Labb2_Blazor.Components.Pages
         public AppState appState { get; set; }
         [Inject]
         public NavigationManager NavManager { get; set; }
-
-
         private EditContext? editContext;
 
 
-
         private string searchQuery = string.Empty;
-        private List<ApplicationUserWithDetailsDTO> filteredCustomers = new List<ApplicationUserWithDetailsDTO>();
+        private List<ApplicationUserDTO> filteredCustomers = new List<ApplicationUserDTO>();
 
         private List<ApplicationUserDTO> allCustomers = new List<ApplicationUserDTO>();
         private List<OrderDto> allOrders = new List<OrderDto>();
         private List<AdressDto> allAdress = new List<AdressDto>();
-        private List<ApplicationUserWithDetailsDTO> combinedCustomersWithDetails = new List<ApplicationUserWithDetailsDTO>();
-        private List<OrderItemDto> allOrderItems = new List<OrderItemDto>();
-        private List<ProductDto> allProducts = new List<ProductDto>();
+        //private List<ApplicationUserWithDetailsDTO> combinedCustomersWithDetails = new List<ApplicationUserWithDetailsDTO>();
+        //private List<OrderItemDto> allOrderItems = new List<OrderItemDto>();
+        //private List<ProductDto> allProducts = new List<ProductDto>();
 
         private int? expandedOrderId = null;
         private AdressDto updateAdress;
@@ -42,6 +41,7 @@ namespace Labb2_Blazor.Components.Pages
         protected bool isEditing = false;
 
         protected bool isProductSaved { get; set; }
+        private bool _isDisposed = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -53,11 +53,15 @@ namespace Labb2_Blazor.Components.Pages
             }
             else
             {
-                
+                var token = DecryptJWTService.DecryptToken(Constants.JWTToken);
+                if (token.Role == "Admin")
+                {
                 _httpClient = HttpClientFactory.CreateClient("Api");
                 _httpClient.DefaultRequestHeaders.Authorization =
     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Constants.JWTToken);
                 await FetchLists();
+                    StateHasChanged();
+                }
             }
         }
 
@@ -65,91 +69,100 @@ namespace Labb2_Blazor.Components.Pages
         {
             try
             {
-                await FetchCustomers();
+                 await FetchCustomers();
                 if (allCustomers != null && allCustomers.Any())
                 {
-                    await FetchAdresses();
-                    await FetchOrders();
-                    await FetchProducts();
-                    try
-                    {
-                        await FetchOrderItems();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"orderitems failed: {ex.Message}");
-                    }
+                    FetchAdresses();
+                    FetchOrders();
+                    //FetchProducts();
+                    //try
+                    //{
+                    //    FetchOrderItems();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine($"orderitems failed: {ex.Message}");
+                    //}
                 }
 
 
-                if (allCustomers != null && allCustomers.Any() && allAdress != null && allAdress.Any() && allOrders != null && allOrders.Any())
-                {
-                    combinedCustomersWithDetails = allCustomers.Select(customer => new ApplicationUserWithDetailsDTO
-                    {
-                        Customer = customer,
-                        Adress = allAdress.FirstOrDefault(adress => adress.AdressId == customer.AdressId),
-                        Orders = allOrders.Where(order => order.UserID == customer.UserId)
-                        .Select(order => new OrderWithDetailsDto
-                        {
-                            Order = order,
-                            OrderItems = allOrderItems.Where(item => item.OrderId == order.OrderId).ToList()
+                //if (allCustomers != null && allCustomers.Any() && allAdress != null && allAdress.Any() && allOrders != null && allOrders.Any())
+                //{
+                //    combinedCustomersWithDetails = allCustomers.Select(customer => new ApplicationUserWithDetailsDTO
+                //    {
+                //        Customer = customer,
+                //        Adress = allAdress.FirstOrDefault(adress => adress.AdressId == customer.AdressId),
+                //        Orders = allOrders.Where(order => order.UserID == customer.UserId)
+                //        .Select(order => new OrderWithDetailsDto
+                //        {
+                //            Order = order,
+                //            OrderItems = allOrderItems.Where(item => item.OrderId == order.OrderId).ToList()
 
 
-                        }).ToList()
-                    }).ToList();
-                    filteredCustomers = combinedCustomersWithDetails;
-                }
+                //        }).ToList()
+                //    }).ToList();
+                //    filteredCustomers = combinedCustomersWithDetails;
+                //}
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error during initialization: {ex.Message}");
             }
-
+            filteredCustomers = allCustomers;
         }
 
 
-        private async Task FetchProducts()
-        {
-            var response = await _httpClient.GetFromJsonAsync<List<ProductDto>>("api/product");
-            if (response != null)
-            {
-                allProducts = response;
-            }
-        }
-        private async Task FetchOrderItems()
-        {
-            var response = await _httpClient.GetFromJsonAsync<List<OrderItemDto>>("api/OrderItems");
-            if (response != null)
-            {
-                allOrderItems = response;
-            }
-        }
+        //private async Task FetchProducts()
+        //{
+        //    var response = _productService.GetProductsAsync();
+        //    if (response != null)
+        //    {
+        //        allProducts = await response;
+        //    }
+        //}
+        //private async Task FetchOrderItems()
+        //{
+        //    var response =  _orderItemService.GetAllOrdersItemAsync();
+        //    if (response != null)
+        //    {
+        //        allOrderItems = await response;
+        //    }
+        //}
 
         private async Task FetchCustomers()
         {
-            var response = await _httpClient.GetFromJsonAsync<List<ApplicationUserDTO>>("api/customer");
-            if (response != null)
+            try
             {
-                allCustomers = response;
+                var response = _customerService.GetAllUsersAsync();
+                if (response != null)
+                {
+                    allCustomers = await response;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR HERE: {ex.Message}");
+                throw;
             }
         }
         private async Task FetchAdresses()
         {
-            var response = await _httpClient.GetFromJsonAsync<List<AdressDto>>("api/adress");
-            foreach (var adress in response)
+            var response = _adressService.GetAllAdressAsync();
+            if (response != null)
             {
-                allAdress.Add(adress);
+                allAdress = await response;
             }
         }
         private async Task FetchOrders()
         {
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<List<OrderDto>>("api/order");
+                var response = _orderService.GetAllOrdersAsync();
+                //var response = await _httpClient.GetFromJsonAsync<List<OrderDto>>("api/order");
                 if (response != null)
                 {
-                    allOrders = response;
+                    allOrders = await response;
                 }
             }
             catch (HttpRequestException ex)
@@ -175,36 +188,41 @@ namespace Labb2_Blazor.Components.Pages
         {
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                filteredCustomers = combinedCustomersWithDetails;
+                filteredCustomers = allCustomers;
             }
             else
             {
-                filteredCustomers = combinedCustomersWithDetails
-                    .Where(p => p.Customer.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                filteredCustomers = allCustomers
+                    .Where(p => p.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
             StateHasChanged();
         }
-        private void OnEditClick(ApplicationUserDTO customer)
+        private Task OnEditClick(ApplicationUserDTO customer)
         {
-            updateAdress = allAdress.Find(a => a.AdressId == customer.AdressId);
-            List<OrderDto> editOrders = allOrders.Where(o => o.UserID == customer.UserId).ToList();
+            Console.WriteLine("Edit button clicked");
 
-            CustomerToEdit = new ApplicationUserDTO
-            {
-                UserId = customer.UserId,
-                Firstname = customer.Firstname,
-                Lastname = customer.Lastname,
-                Email = customer.Email,
-                PhoneNo = customer.PhoneNo,
-                AdressId = customer.AdressId,
-                Adress = updateAdress,
-                Orders = editOrders
-
-            };
-            selectedOrderId = editOrders.Count > 0 ? editOrders[0].OrderId : (int?)null;
-
+            CustomerToEdit = customer;  
+            editContext = new EditContext(CustomerToEdit);
             isEditing = true;
+            updateAdress = allAdress.Find(a => a.AdressId == customer.AdressId);
+           // StateHasChanged();
+            //            List<OrderDto> editOrders = allOrders.Where(o => o.UserID == customer.UserId).ToList();
+
+            //    new ApplicationUserDTO
+            //{
+            //    UserId = customer.UserId,
+            //    Firstname = customer.Firstname,
+            //    Lastname = customer.Lastname,
+            //    Email = customer.Email,
+            //    PhoneNo = customer.PhoneNo,
+            //    AdressId = customer.AdressId,
+            //    Adress = updateAdress,
+            //    Orders = editOrders
+
+            //};
+            //   selectedOrderId = editOrders.Count > 0 ? editOrders[0].OrderId : (int?)null;
+            return Task.CompletedTask;
         }
 
         private void CancelEdit()
@@ -215,28 +233,21 @@ namespace Labb2_Blazor.Components.Pages
 
         private async Task UpdateCustomer()
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/customer/{CustomerToEdit.UserId}", CustomerToEdit);
-            Console.WriteLine($"id is: {CustomerToEdit.UserId}");
-
-            CheckResult(response);
+            var response = _customerService.UpdateUserAsync(CustomerToEdit.UserId, CustomerToEdit);
             StateHasChanged();
         }
-
-
-        private async void CheckResult(HttpResponseMessage response)
+        public void Dispose()
         {
-            if (response.IsSuccessStatusCode)
-            {
-                await FetchCustomers();
-                isEditing = false;
-                CustomerToEdit = null;
-            }
-            else
-            {
-                Console.WriteLine("Failed to update product");
-            }
-            StateHasChanged();
-
+            // Set disposed flag to true when the component is disposed
+            _isDisposed = true;
         }
+        private async Task DebugAuthentication()
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            Console.WriteLine($"Is Authenticated: {user.Identity.IsAuthenticated}");
+            Console.WriteLine($"User Role: {user.IsInRole("Admin")}");
+        }
+
     }
 }

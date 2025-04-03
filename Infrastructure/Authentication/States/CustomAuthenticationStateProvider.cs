@@ -62,7 +62,7 @@ namespace Labb2_Infrastructure.Authentication.States
             return new ClaimsPrincipal(new ClaimsIdentity(
                 new List<Claim>
                 {
-                    new(ClaimTypes.Name, claims.FirstName!),
+                    new(ClaimTypes.Name, claims.Email!),
                     new(ClaimTypes.Email, claims.Email),
                     new(ClaimTypes.Role, claims.Role)
 

@@ -45,5 +45,24 @@ namespace Labb2_Infrastructure.Repositories
         {
             return await _context.Products.ToListAsync();
         }
+
+        public Task<Product> UpdateProductAsync(int id, Product product)
+        {
+            var productToUpdate = _context.Products.FirstOrDefault(p => p.Id == id);
+
+            if (productToUpdate == null)
+            {
+                return Task.FromResult<Product>(null);
+            }
+            productToUpdate.Name = product.Name;
+            productToUpdate.Description = product.Description;
+            productToUpdate.Price = product.Price;
+            productToUpdate.ProductCategory = product.ProductCategory;
+            productToUpdate.Status= product.Status;
+            productToUpdate.CategoryId = product.CategoryId;
+
+            _context.SaveChangesAsync();
+            return Task.FromResult(productToUpdate);
+        }
     }
 }

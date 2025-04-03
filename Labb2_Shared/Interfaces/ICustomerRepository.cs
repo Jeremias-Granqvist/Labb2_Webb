@@ -13,9 +13,9 @@ namespace Labb2_Shared.Interfaces
 
         Task<ApplicationUser> GetUsersWithAdressAsync(int customerId);
         Task<ApplicationUser> GetUsersWithOrdersAsync(int customerId);
-
-        Task<IEnumerable<ApplicationUser>> GetUserAsync();
-
+        Task<ApplicationUser> GetUserFromEmailAsync(string email);
+        Task<IEnumerable<ApplicationUser>> GetAllUserAsync();
+        Task<ApplicationUser> UpdateUserAsync(int id, ApplicationUser user);
         Task<bool> DeleteUserAsync(int id);
     }
 }

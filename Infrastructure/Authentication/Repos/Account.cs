@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
@@ -93,6 +94,8 @@ namespace Labb2_Infrastructure.Authentication.Repos
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        
 
         private async Task<ApplicationUser> GetUser(string email) 
             => await _context.Users.FirstOrDefaultAsync(e => e.Email == email);

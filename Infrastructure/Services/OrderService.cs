@@ -5,6 +5,8 @@ using Labb2_Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,47 +14,66 @@ namespace Labb2_Infrastructure.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository<Order> _repository;
+        private readonly HttpClient _httpClient;
 
-        public OrderService(IRepository<Order> repository)
+        public OrderService(IHttpClientFactory clientFactory)
         {
-            _repository = repository;
+            _httpClient = clientFactory.CreateClient("Api");
+
         }
 
         public async Task<Order> CreateOrderAsync(OrderDto orderDto)
         {
             var order = AutoMapper<OrderDto, Order>.Map(orderDto);
+            var response = await _httpClient.PostAsJsonAsync("api/order", order);
 
-            return await _repository.AddAsync(order);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Order>();
+            }
+            return null;
+
+
         }
 
         public async Task<bool> DeleteOrderAsync(int id)
         {
-            return await _repository.DeleteAsync(id);
+            var response = await _httpClient.DeleteAsync($"api/order/{id}");
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
+        public async Task<List<OrderDto>> GetAllOrdersAsync()
         {
-
-            var list = await _repository.GetAllAsync();
+            var list = await _httpClient.GetFromJsonAsync<IEnumerable<Order>>("api/order");
             var changedList = AutoMapper<Order, OrderDto>.MapListIenum(list);
             return changedList;
         }
 
         public async Task<OrderDto> GetOrderByIdAsync(int id)
         {
-            var order = await _repository.GetByIdAsync(id);
-            if (order == null) return null;
-            return AutoMapper<Order, OrderDto>.Map(order);
+            var response = await _httpClient.GetFromJsonAsync<Order>($"api/order/{id}");
+
+            if (response == null)
+            {
+                return null;
+            }
+            return AutoMapper<Order, OrderDto>.Map(response);
         }
 
         public async Task<bool> UpdateOrderAsync(int id, OrderDto orderDto)
         {
-            var orderToUpdate = await _repository.GetByIdAsync(id);
-            if (orderToUpdate == null) return false;
+            var orderToUpdate = await _httpClient.GetFromJsonAsync<Order>($"api/order/{id}");
+
+            if (orderToUpdate == null)
+            {
+                return false;
+            }
+
             AutoMapper<OrderDto, Order>.Map(orderDto, orderToUpdate);
 
-            return await _repository.UpdateAsync(orderToUpdate);
+            var response = await _httpClient.PutAsJsonAsync($"api/order/{id}", orderToUpdate);
+
+            return response.IsSuccessStatusCode;
         }
     }
 }

@@ -2,7 +2,8 @@
 @rendermode InteractiveServer
 @using Labb2_Blazor.Dto;
 
-
+<AuthorizeView Roles="Admin" Context="authContext">
+    <Authorized>
 <PageTitle>Add Product</PageTitle>
 <h3>Add Product</h3>
 
@@ -60,7 +61,11 @@ OnValidSubmit="@ValidInput">
 		</div>
 	</div>
 </EditForm>
-
+	</Authorized>
+	<NotAuthorized>
+		<p>I don't know how you got here, but you shouldn't see this.</p>
+	</NotAuthorized>
+</AuthorizeView>
 
 @if(!isProductSaved)
 {

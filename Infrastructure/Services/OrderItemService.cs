@@ -8,55 +8,78 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http.Json;
 
 namespace Labb2_Infrastructure.Services
 {
     public class OrderItemService : IOrderitemService
     {
 
-        private readonly IRepository<OrderItem> _repository;
+        private readonly HttpClient _httpClient;
 
-
-        public OrderItemService(IRepository<OrderItem> repo)
+        public OrderItemService(IHttpClientFactory clientFactory)
         {
-            _repository = repo;
+            _httpClient = clientFactory.CreateClient("Api");
         }
 
         public async Task<OrderItem> CreateOrderItemAsync(OrderItemDto itemdto)
         {
             var item = AutoMapper<OrderItemDto, OrderItem>.Map(itemdto);
-            return await _repository.AddAsync(item);
+
+            var response = await _httpClient.PostAsJsonAsync("api/orderitem", item);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<OrderItem>();
+            }
+            return null;
         }
 
-        public Task<bool> DeleteOrderItemAsync(int id)
+        public async Task<bool> DeleteOrderItemAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"api/orderitem/{id}");
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<OrderItemDto>> GetAllOrdersItemAsync()
+        public async Task<List<OrderItemDto>> GetAllOrdersItemAsync()
         {
-            var list = await _repository.GetAllAsync();
-            var changedList = AutoMapper<OrderItem, OrderItemDto>.MapListIenum(list);
-            return changedList;
+            var response = await _httpClient.GetFromJsonAsync<IEnumerable<OrderItem>>("api/orderitem");
+
+            if (response == null)
+            {
+                return new List<OrderItemDto>();
+            }
+
+            var result = AutoMapper<OrderItem, OrderItemDto>.MapListIenum(response).ToList();
+
+            return result;
         }
 
         public async Task<OrderItemDto> GetOrderItemByIdAsync(int id)
         {
-            var order = await _repository.GetByIdAsync(id);
-            if (order == null) return null;
-            return AutoMapper<OrderItem, OrderItemDto>.Map(order);
+            var response = await _httpClient.GetFromJsonAsync<OrderItem>($"api/orderitem/{id}");
+
+            if (response == null)
+            {
+                return null;
+            }
+            return AutoMapper<OrderItem, OrderItemDto>.Map(response);
         }
 
         public async Task<bool> UpdateOrderItemAsync(int id, OrderItemDto orderItemDto)
         {
-            var orderItemToUpdate = await _repository.GetByIdAsync(id);
+            var orderItemToUpdate = await _httpClient.GetFromJsonAsync<OrderItem>($"api/orderitem/{id}");
+
             if (orderItemToUpdate == null)
             {
                 return false;
             }
+
             AutoMapper<OrderItemDto, OrderItem>.Map(orderItemDto, orderItemToUpdate);
 
-            return await _repository.UpdateAsync(orderItemToUpdate);
+            var response = await _httpClient.PutAsJsonAsync($"api/orderitem/{id}", orderItemToUpdate);
+
+            return response.IsSuccessStatusCode;
         }
     }
 }

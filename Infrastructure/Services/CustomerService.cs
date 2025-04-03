@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,63 +16,103 @@ namespace Labb2_Infrastructure.Services
 {
     public class CustomerService : ICustomerService
     {
-        private readonly IRepository<ApplicationUser> _repository;
-        private readonly ICustomerRepository _customerRepository;
 
+        private readonly HttpClient _httpClient;
 
-        public CustomerService(IRepository<ApplicationUser> repository, ICustomerRepository customerRepository) 
+        public CustomerService(IHttpClientFactory httpClient)
         {
-            _repository = repository;
-            _customerRepository = customerRepository;
+            _httpClient = httpClient.CreateClient("Api");
         }
         public async Task<ApplicationUser> CreateUserAsync(ApplicationUserDTO customerDto)
         {
             var customer = AutoMapper<ApplicationUserDTO, ApplicationUser>.Map(customerDto);
 
-            return await _repository.AddAsync(customer);
+            var response = await _httpClient.PostAsJsonAsync("api/customer", customer);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<ApplicationUser>();
+            }
+            return null;
+
         }
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            return await _repository.DeleteAsync(id);
+            var response = await _httpClient.DeleteAsync($"api/customer/{id}");
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<ApplicationUserDTO>> GetAllUsersAsync()
+        public async Task<List<ApplicationUserDTO>> GetAllUsersAsync()
         {
-            var list = await _repository.GetAllAsync();
-            var changedList = AutoMapper<ApplicationUser, ApplicationUserDTO>.MapListIenum(list);
-            return changedList;
+            var response = await _httpClient.GetFromJsonAsync<IEnumerable<ApplicationUser>>("api/customer");
 
+            if (response == null)
+            {
+                return new List<ApplicationUserDTO>();
+            }
+
+            var result = AutoMapper<ApplicationUser, ApplicationUserDTO>.MapListIenum(response).ToList();
+
+            return result;
+        }
+
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        {
+            try
+            {
+            var response = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{email}");
+
+            return response;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR SAYS : {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<ApplicationUserDTO> GetUsersByIdAsync(int id)
         {
-            var customer = await _repository.GetByIdAsync(id);
-            if (customer == null) return null;
+            var response = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{id}");
 
-            return AutoMapper<ApplicationUser, ApplicationUserDTO>.Map(customer);
+            if (response == null)
+            {
+                return null;
+            }
+            return AutoMapper<ApplicationUser, ApplicationUserDTO>.Map(response);
         }
 
         public async Task<ApplicationUser> GetUsersWithAdressAsync(int customerId)
         {
-            return await _customerRepository.GetUsersWithAdressAsync(customerId);
+            var response = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{customerId}/address");
+
+            return response;
         }
 
         public async Task<ApplicationUser> GetUsersWithOrdersAsync(int customerId)
         {
-            return await _customerRepository.GetUsersWithOrdersAsync(customerId);
+            var response = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{customerId}/orders");
+
+            return response;
         }
 
         public async Task<bool> UpdateUserAsync(int id, ApplicationUserDTO customerDto)
         {
-            var CustomerToUpdate = await _repository.GetByIdAsync(id);
-            if (CustomerToUpdate == null)
+            var customerToUpdate = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{id}");
+
+            if (customerToUpdate == null)
             {
                 return false;
             }
-            AutoMapper<ApplicationUserDTO, ApplicationUser>.Map(customerDto, CustomerToUpdate);
 
-            return await _repository.UpdateAsync(CustomerToUpdate);
+            AutoMapper<ApplicationUserDTO, ApplicationUser>.Map(customerDto, customerToUpdate);
+
+            var response = await _httpClient.PutAsJsonAsync($"api/customer/{id}", customerToUpdate);
+
+            return response.IsSuccessStatusCode;
+
         }
     }
 }

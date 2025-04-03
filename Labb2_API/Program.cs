@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Labb2_Infrastructure.Authentication.States;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -57,7 +58,10 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddHttpClient();
 
+
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IRepositoryService<>), typeof(RepositoryService<>));
 builder.Services.AddScoped<IAccount, Account>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -74,6 +78,7 @@ builder.Services.AddScoped<IAdressRepository, AdressRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IReferenceService, ReferenceService>();
+
 
 builder.Services.AddCors(options =>
 {

@@ -37,16 +37,6 @@ namespace Labb2_API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        //public async Task<IActionResult> GetOrderItemsWithProduct(int id)
-        //{
-        //    var order = await _repository.GetOrderWithCustomerAndItemsAsync(id);
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(order);
-        //}
 
         //POST (skapa med API)
         [HttpPost]

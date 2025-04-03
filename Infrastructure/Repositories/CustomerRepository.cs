@@ -55,7 +55,7 @@ namespace Labb2_Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetUserAsync()
+        public async Task<IEnumerable<ApplicationUser>> GetAllUserAsync()
         {
             return await _context.Users.ToListAsync();
         }
@@ -68,5 +68,26 @@ namespace Labb2_Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<ApplicationUser> GetUserFromEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public Task<ApplicationUser> UpdateUserAsync(int id, ApplicationUser user)
+        {
+            var userToUpdate = _context.Users.FirstOrDefault(u => u.UserId == id);
+
+            if (userToUpdate == null)
+            {
+                return Task.FromResult<ApplicationUser>(null);
+            }
+            userToUpdate.FirstName = user.FirstName;
+            userToUpdate.LastName = user.LastName;
+            userToUpdate.Email = user.Email;
+            userToUpdate.PhoneNumber= user.PhoneNumber;
+
+            _context.SaveChangesAsync();
+            return Task.FromResult(userToUpdate);
+        }
     }
 }

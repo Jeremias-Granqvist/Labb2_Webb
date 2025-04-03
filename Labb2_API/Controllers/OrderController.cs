@@ -10,12 +10,12 @@ namespace Labb2_API.Controllers;
 public class OrderController : ControllerBase
 {
 
-    private readonly IOrderService _orderService;
+
     private readonly IOrderRepository _orderRepository;
 
-    public OrderController(IOrderService orderService, IOrderRepository orderRepository)
+    public OrderController(IOrderRepository orderRepository)
     {
-        _orderService = orderService;
+
         _orderRepository = orderRepository;
     }
     //GET (hämta med API)
@@ -24,7 +24,7 @@ public class OrderController : ControllerBase
     {
         try
         {
-        var orders = await _orderService.GetAllOrdersAsync();
+        var orders = await _orderRepository.GetAllOrdersAsync();
             return Ok(orders);
         }
         catch (Exception ex) { 
@@ -45,31 +45,24 @@ public class OrderController : ControllerBase
         return Ok(order);
     }
 
-    //[HttpGet("{id}")]
-    //public async Task<ActionResult<OrderDto>> GetOrderbyId(int id)
-    //{
-    //    var order = await _orderService.GetOrderByIdAsync(id);
-
-    //    return order;
-    //}
 
     //POST (skapa med API)
     [HttpPost]
-    public async Task<ActionResult<Order>> PostOrder(OrderDto order)
+    public async Task<ActionResult<Order>> PostOrder(Order order)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        var result = await _orderService.CreateOrderAsync(order);
+        var result = await _orderRepository.CreateOrderAsync(order);
         return Created();
     }
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrder(int id, OrderDto order)
+    public async Task<IActionResult> PutOrder(int id, Order order)
     {
-        await _orderService.UpdateOrderAsync(id, order);
+        await _orderRepository.UpdateOrderAsync(id, order);
         return Ok();
     }
 
@@ -77,7 +70,7 @@ public class OrderController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder(int id)
     {
-        var category = await _orderService.DeleteOrderAsync(id);
+        var category = await _orderRepository.DeleteOrderAsync(id);
         if (category == true)
         {
             return Ok();

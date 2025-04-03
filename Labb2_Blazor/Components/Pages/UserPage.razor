@@ -1,0 +1,48 @@
+﻿@page "/UserPage"
+@rendermode InteractiveServer
+
+@using Labb2_Shared.Interfaces;
+@using Blazored.LocalStorage;
+@inject ILocalStorageService localStorage
+@inject ICustomerService customerService
+@inject IAccountService accountService
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider customAuthStateProvider
+<h3>UserPage</h3>
+
+@if (user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <h4>User Information</h4>
+        <p><strong>FirstName:</strong> @user.FirstName</p>
+        <p><strong>LastName:</strong> @user.LastName</p>
+        <p><strong>Email:</strong> @user.Email</p>
+        <p><strong>Email:</strong> @user.PhoneNumber</p>
+        <h4>Adress Information</h4>
+
+        <p><strong>Street:</strong> @user.Adress.StreetName</p>
+        <p><strong>City:</strong> @user.Adress.City</p>
+        <p><strong>>Zipcode:</strong> @user.Adress.ZipCode</p>
+        <p><strong>Country:</strong> @user.Adress.Country</p>
+        
+
+        <h4>Orders</h4>
+        @if (orders != null && orders.Any())
+        {
+            <ul>
+                @foreach (var order in orders)
+                {
+                    <li>Order ID: @order.OrderId, Date: @order.OrderId, Total: @order.DateOfOrder</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No orders found.</p>
+        }
+    </div>
+}
