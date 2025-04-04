@@ -1,4 +1,5 @@
 ﻿using Labb2_Infrastructure.DTOExstension;
+using Labb2_Infrastructure.UoW;
 using Labb2_Shared.Dtos;
 using Labb2_Shared.Interfaces;
 using Labb2_Shared.Models;
@@ -15,11 +16,50 @@ namespace Labb2_Infrastructure.Services
     public class OrderService : IOrderService
     {
         private readonly HttpClient _httpClient;
-
-        public OrderService(IHttpClientFactory clientFactory)
+        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+        public OrderService(IHttpClientFactory clientFactory, IUnitOfWorkFactory unitOfWorkFactory)
         {
             _httpClient = clientFactory.CreateClient("Api");
+            _unitOfWorkFactory = unitOfWorkFactory;
+        }
 
+        public async Task<bool> PlaceOrderAsync(string customerMail, List<int> productIds)
+        {
+            var request = new CreateOrder
+            {
+                customerMail = customerMail,
+                productIds = productIds
+            };
+            var response = await _httpClient.PostAsJsonAsync("api/order/place-order", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"error placing order {response.StatusCode}");
+                return false;
+            }
+                //using (var _unitOfWork = _unitOfWorkFactory.Create()) { 
+                //var customer = await _unitOfWork.Customers.GetUserFromEmailAsync(customerMail);
+                //if (customer == null) return false;
+
+                //var products = await _unitOfWork.Products.GetAllProductsAsync();
+                //var selectedProducts = products.Where(p => productIds.Contains(p.Id)).ToList();
+
+                //if (!selectedProducts.Any()) return false;
+
+                //var order = new Order
+                //{
+                //    UserID = customer.UserId,
+                //    DateOfOrder = DateOnly.FromDateTime(DateTime.Now),
+                //    Products = selectedProducts 
+                //};
+
+                //await _unitOfWork.CompleteAsync();
+                //return true;
+                //}
         }
 
         public async Task<Order> CreateOrderAsync(OrderDto orderDto)

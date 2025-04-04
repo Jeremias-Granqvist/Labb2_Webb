@@ -41,9 +41,20 @@ namespace Labb2_Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync()
+        public async Task<List<Product>> GetAllProductsAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products
+                          .Select(p => new Product
+                          {
+                              Id = p.Id,
+                              Name = p.Name,
+                              Description = p.Description,
+                              Price = p.Price,
+                              CategoryId = p.CategoryId,
+                              Status = p.Status
+                          })
+                          .ToListAsync();
+
         }
 
         public Task<Product> UpdateProductAsync(int id, Product product)

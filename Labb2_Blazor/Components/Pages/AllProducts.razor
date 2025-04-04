@@ -1,5 +1,11 @@
 ﻿@page "/Allproducts"
 @rendermode InteractiveServer
+@using Labb2_Shared.Interfaces
+@inject IOrderService OrderService
+@inject IProductService ProductService
+
+@inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>All Products</h3>
 
@@ -16,22 +22,54 @@
 				<th>Category</th>
 				<th>Product name</th>
 				<th>Price</th>
+				<th>Place in cart</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach(var product in filteredProducts)
-		{
-			<tr>
-				<td>@GetCategoryName(product.CategoryId)</td>
-				<td>@product.Name</td>
-				<td>@product.Price</td>
-			</tr>
-		}
+			{
+				<tr>
+					<td>@GetCategoryName(product.CategoryId)</td>
+					<td>@product.Name</td>
+					<td>@product.Price</td>
+					<td><button class="btn btn-secondary btn-sm" @onclick="() => PlaceInCart(product.Id)">Place in cart</button></td>
+
+				</tr>
+			}
 		</tbody>	
 	</table>
+	if (cart.Any() == true)
+	{
+		<table class="table table-striped mt-3">
+			<thead>
+				<tr>
+					<th>Product name</th>
+					<th>Price</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach(var item in cart)
+				{<tr>
+					<td> @allProducts.FirstOrDefault(a => a.Id == item).Name</td>
+					<td> @allProducts.FirstOrDefault(a => a.Id == item).Price</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+
+		<div>
+			<td><strong>Total Sum:</strong></td>
+			@{var totalSum = cart.Sum(item => filteredProducts.FirstOrDefault(a => a.Id == item)?.Price ?? 0);}
+			<td><strong>@totalSum.ToString("C")</strong></td> <!-- Total formatted as currency -->
+			<button class="btn btn-primary" @onclick="PlaceOrder" disabled="@(cart.Count == 0)">Place Order</button>
+
+		</div>
+	}
 }
 else
 {
 <p> No products Found</p>	
 }
+
 

@@ -16,6 +16,7 @@ using Labb2_Shared.Interfaces;
 using Labb2_Infrastructure.Services;
 using Labb2_Shared.Models;
 using Labb2_Infrastructure.Repositories;
+using Labb2_Infrastructure.UoW;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,10 +52,14 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderitemService, OrderItemService>();
 builder.Services.AddScoped<IAdressService, AdressService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>();
+
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddAuthorizationCore();
+
 
 var app = builder.Build();
 

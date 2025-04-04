@@ -11,7 +11,7 @@ namespace Labb2_Shared.Interfaces;
 public interface IProductService
 {
     Task<Product> CreateProductAsync(ProductDto productDto);
-    Task<List<ProductDto>> GetProductsAsync();
+    Task<List<ProductDto>> GetAllProductsAsync();
 
     Task<bool> DeleteProductAsync(int id);
 

@@ -44,7 +44,7 @@ namespace Labb2_Infrastructure.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<List<ProductDto>> GetProductsAsync()
+        public async Task<List<ProductDto>> GetAllProductsAsync()
         {
             var response = await _httpClient.GetFromJsonAsync<List<Product>>("api/product");
 

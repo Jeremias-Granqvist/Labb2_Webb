@@ -8,7 +8,7 @@ using System.Security.AccessControl;
 
 namespace Labb2_Blazor.Components.Pages
 {
-    public partial class AllCustomers : IDisposable
+    public partial class AllCustomers 
     {
         [Inject]
         public IHttpClientFactory HttpClientFactory { get; set; } = default;
@@ -41,7 +41,7 @@ namespace Labb2_Blazor.Components.Pages
         protected bool isEditing = false;
 
         protected bool isProductSaved { get; set; }
-        private bool _isDisposed = false;
+        private bool _IsAuthorized = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -56,6 +56,7 @@ namespace Labb2_Blazor.Components.Pages
                 var token = DecryptJWTService.DecryptToken(Constants.JWTToken);
                 if (token.Role == "Admin")
                 {
+                    _IsAuthorized = true;
                 _httpClient = HttpClientFactory.CreateClient("Api");
                 _httpClient.DefaultRequestHeaders.Authorization =
     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Constants.JWTToken);
@@ -184,8 +185,9 @@ namespace Labb2_Blazor.Components.Pages
             }
         }
 
-        private void SearchCustomers()
+        public void SearchCustomers()
         {
+            StateHasChanged();
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
                 filteredCustomers = allCustomers;
@@ -196,17 +198,17 @@ namespace Labb2_Blazor.Components.Pages
                     .Where(p => p.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
-            StateHasChanged();
+            
         }
-        private Task OnEditClick(ApplicationUserDTO customer)
+        public Task OnEditClick(ApplicationUserDTO customer)
         {
             Console.WriteLine("Edit button clicked");
 
             CustomerToEdit = customer;  
+            updateAdress = allAdress.Find(a => a.AdressId == customer.AdressId);
             editContext = new EditContext(CustomerToEdit);
             isEditing = true;
-            updateAdress = allAdress.Find(a => a.AdressId == customer.AdressId);
-           // StateHasChanged();
+           StateHasChanged();
             //            List<OrderDto> editOrders = allOrders.Where(o => o.UserID == customer.UserId).ToList();
 
             //    new ApplicationUserDTO
@@ -235,11 +237,6 @@ namespace Labb2_Blazor.Components.Pages
         {
             var response = _customerService.UpdateUserAsync(CustomerToEdit.UserId, CustomerToEdit);
             StateHasChanged();
-        }
-        public void Dispose()
-        {
-            // Set disposed flag to true when the component is disposed
-            _isDisposed = true;
         }
         private async Task DebugAuthentication()
         {

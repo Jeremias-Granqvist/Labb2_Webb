@@ -13,6 +13,7 @@ using Labb2_Infrastructure.Authentication.Repos;
 using Labb2_Infrastructure.Authentication.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Labb2_Infrastructure.Authentication.States;
+using Labb2_Infrastructure.UoW;
 
 
 
@@ -21,7 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<StoreContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+.EnableSensitiveDataLogging()
+        .LogTo(Console.WriteLine, LogLevel.Information));
+
 
 
 
@@ -78,7 +81,8 @@ builder.Services.AddScoped<IAdressRepository, AdressRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IReferenceService, ReferenceService>();
-
+builder.Services.AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddCors(options =>
 {

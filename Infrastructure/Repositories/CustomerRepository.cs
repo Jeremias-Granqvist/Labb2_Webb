@@ -27,8 +27,7 @@ namespace Labb2_Infrastructure.Repositories
             return await _context.Users
                 .Include(c => c.Adress)  // Eagerly load the Address
                 .Include(c => c.Orders)   // Eagerly load the Orders
-                .ThenInclude(o => o.OrderItems)  // Eagerly load OrderItems
-                .ThenInclude(oi => oi.Product)  // Eagerly load Products for OrderItems
+                .ThenInclude(oi => oi.Products)  // Eagerly load Products
                 .FirstOrDefaultAsync(c => c.UserId == customerId);
         }
 
@@ -70,6 +69,7 @@ namespace Labb2_Infrastructure.Repositories
 
         public async Task<ApplicationUser> GetUserFromEmailAsync(string email)
         {
+
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 

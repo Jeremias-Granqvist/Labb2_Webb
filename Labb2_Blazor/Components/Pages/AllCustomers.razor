@@ -8,14 +8,15 @@
 @inject IProductService _productService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
+<!-- kan lägga authorize taggar här-->
+@if(_IsAuthorized){
 
-<AuthorizeView Roles="Admin" Context="authContext">
-    <Authorized>
 <h3>AllCustomers</h3>
 <div>
 	<input type="text" @bind="searchQuery" placeholder="Search by customer email" class="form-control" />
-	<button class="btn btn-primary mt-2" @onclick="SearchCustomers">Search</button>
+            <button class="btn btn-primary mt-2" @onclick="SearchCustomers" @onclick:preventDefault id="searchButton">Search</button>
 </div>
+        <button class="btn btn-primary mt-2" @onclick="@(() => Console.WriteLine("Hej"))">test</button>
 
 @if (filteredCustomers.Any())
 {
@@ -51,7 +52,7 @@ else
 @if (isEditing)
 {
     <div class="mt-3">
-        <h4>Edit Product</h4>
+        <h4>Edit User</h4>
         <EditForm OnValidSubmit="UpdateCustomer" EditContext="@editContext">
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -70,8 +71,8 @@ else
                 <label for="description">Email</label>
                 <input type="text" id="Email" class="form-control" @bind="CustomerToEdit.Email" />
             </div>
-            
-@*             <div class="form-group">
+@*             
+             <div class="form-group">
                 <label for="description">Street</label>
                 <input type="text" id="Street" class="form-control" @bind="updateAdress.StreetName" />
             </div>
@@ -121,9 +122,8 @@ else
         </EditForm>
     </div>
 }
-    </Authorized>
-    <NotAuthorized>
+}
+else{ 
         <p>I don't know how you got here, but you shouldn't see this.</p>
-    </NotAuthorized>
-</AuthorizeView >
+}
 

@@ -17,5 +17,7 @@ namespace Labb2_Shared.Interfaces
         Task<bool> DeleteOrderAsync(int id);
 
         Task<bool> UpdateOrderAsync(int id, OrderDto orderDto);
+
+        Task<bool> PlaceOrderAsync(string userEmail, List<int> productIds);
     }
 }

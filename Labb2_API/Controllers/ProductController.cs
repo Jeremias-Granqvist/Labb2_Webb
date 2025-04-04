@@ -25,9 +25,9 @@ public class ProductController : ControllerBase
     //GET (hämta med API)
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+    public async Task<ActionResult<List<Product>>> GetAllProducts()
     {
-        var products = await _productRepository.GetProductsAsync();
+        var products = await _productRepository.GetAllProductsAsync();
             return Ok(products);
     }
 

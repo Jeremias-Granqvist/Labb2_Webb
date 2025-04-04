@@ -1,4 +1,5 @@
-﻿using Labb2_Shared.Dtos;
+﻿using Labb2_Infrastructure.Repositories;
+using Labb2_Shared.Dtos;
 using Labb2_Shared.Interfaces;
 using Labb2_Shared.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,20 @@ public class OrderController : ControllerBase
 {
 
 
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IProductRepository _productRepository;
     private readonly IOrderRepository _orderRepository;
 
-    public OrderController(IOrderRepository orderRepository)
-    {
 
+    public OrderController(ICustomerRepository customerRepository,
+                           IProductRepository productRepository,
+                           IOrderRepository orderRepository)
+    {
+        _customerRepository = customerRepository;
+        _productRepository = productRepository;
         _orderRepository = orderRepository;
     }
+
     //GET (hämta med API)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
@@ -57,6 +65,33 @@ public class OrderController : ControllerBase
         var result = await _orderRepository.CreateOrderAsync(order);
         return Created();
     }
+
+    [HttpPost("place-order")]
+    public async Task<IActionResult> PlaceOrderAsync(CreateOrder createOrder)
+    {
+        
+        var customer = await _customerRepository.GetUserFromEmailAsync(createOrder.customerMail);
+        if (customer == null) return NotFound("Customer not found.");
+
+        
+        var products = await _productRepository.GetAllProductsAsync();
+        var selectedProducts = products.Where(p => createOrder.productIds.Contains(p.Id)).ToList();
+
+        if (!selectedProducts.Any()) return BadRequest("No valid products selected.");
+
+        // Create and save the order
+        var order = new Order
+        {
+            UserID = customer.UserId,
+            DateOfOrder = DateOnly.FromDateTime(DateTime.Now),
+            Products = selectedProducts
+        };
+
+        await _orderRepository.CreateOrderAsync(order);
+
+        return Ok();
+    }
+
 
     //PUT (uppdatera med API)
     [HttpPut("{id}")]

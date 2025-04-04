@@ -71,18 +71,18 @@ public partial class StoreContext : DbContext
         //product
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey((e => e.Id)).HasName("PK_Produkter");
+            entity.HasKey(e => e.Id).HasName("PK_Produkter");
 
-            entity.Property((e => e.Id)).HasColumnName("ProductID");
+            entity.Property(e => e.Id).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("ProductCategoryID");
-            entity.Property((e => e.Description)).HasMaxLength(50);
-            entity.Property((e => e.Name)).HasMaxLength(50);
-            entity.Property((e => e.Status));
+            entity.Property(e => e.Description).HasMaxLength(50);
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Status);
 
             entity.HasOne(d => d.ProductCategory)
-                .WithMany(p => p.Products)
-                .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK_Produkter_Kategorier");
+                  .WithMany(p => p.Products)
+                  .HasForeignKey(d => d.CategoryId)
+                  .HasConstraintName("FK_Produkter_Kategorier");
         });
 
 

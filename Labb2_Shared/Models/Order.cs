@@ -8,6 +8,7 @@
 
         public virtual ApplicationUser User { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public List<Product> Products { get; set; } = new List<Product>();    
     }
 
 }
