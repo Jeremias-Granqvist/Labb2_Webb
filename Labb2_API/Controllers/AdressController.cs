@@ -16,7 +16,16 @@ public class AdressController : ControllerBase
     {
         _adressRepository = adressRepository;
     }
-
+    /// <summary>
+    /// returns a list of adresses from DB
+    /// </summary>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     //GET (hämta med API)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Adress>>> GetAllAdress()
@@ -24,6 +33,18 @@ public class AdressController : ControllerBase
         var adress = await _adressRepository.GetAllAdressAsync();
         return Ok(adress);
     }
+
+    /// <summary>
+    /// Get specific adress based on AdressId
+    /// </summary>
+    /// <param name="id">The unique identifier for the address to retrieve.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAddressWithCustomers(int id)
     {
@@ -35,7 +56,17 @@ public class AdressController : ControllerBase
         return Ok(address);
     }
 
-
+    /// <summary>
+    /// Adds mew adress to database
+    /// </summary>
+    /// <param name="adress">The address data to be added to the database, including street name, city, zip code, and country.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     //POST (skapa med API)
     [HttpPost]
     public async Task<ActionResult<Adress>> CreateAdress(Adress adress)
@@ -48,6 +79,18 @@ public class AdressController : ControllerBase
         return Created();
     }
 
+    /// <summary>
+    /// update adress already in database
+    /// </summary> 
+    /// <param name="id">The unique identifier for the address that needs to be updated.</param>
+    /// <param name="adress">The updated address data, including street name, city, zip code, and country.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAdress(int id, Adress adress)
@@ -55,22 +98,6 @@ public class AdressController : ControllerBase
         
         await _adressRepository.UpdateAdressAsync(id, adress);
         return Ok();
-    }
-
-    // DELETE (Ta bort med API)
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAdress(int id)
-    {
-        var adress = await _adressRepository.DeleteAdressAsync(id);
-        if (adress == true)
-        {
-            return Ok();
-        }
-        else
-        {
-            return NotFound();
-        }
-
     }
 
 }

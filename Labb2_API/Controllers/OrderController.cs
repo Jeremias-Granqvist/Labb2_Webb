@@ -26,22 +26,34 @@ public class OrderController : ControllerBase
         _orderRepository = orderRepository;
     }
 
-    //GET (hämta med API)
+    /// <summary>
+    /// Get a list of all orders
+    /// </summary>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    //GET (hämta med API)
     [HttpGet]
     public async Task<ActionResult<List<Order>>> GetAllOrders()
     {
-        //try
-        //{
         var orders = await _orderRepository.GetAllOrdersAsync();
             return Ok(orders);
-        //}
-        //catch (Exception ex) { 
-
-
-        //    return StatusCode(500, $"internal servier error: {ex.Message}");
-        //}
     }
 
+    /// <summary>
+    /// sends information about order from OrderID
+    /// </summary>
+    /// <param name="id">The ID of the order to retrieve. This ID is used to fetch the order details from the database, including customer and product information.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrderWithCustomerAndItems(int id)
     {
@@ -55,31 +67,28 @@ public class OrderController : ControllerBase
 
 
     //POST (skapa med API)
-    [HttpPost]
-    public async Task<ActionResult<Order>> PostOrder(Order order)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        var result = await _orderRepository.CreateOrderAsync(order);
-        return Created();
-    }
 
+    /// <summary>
+    /// Creates a new order and sends to DB
+    /// </summary>
+    /// <param name="createOrder">The `CreateOrder` object containing order details such as customer email and selected product IDs.</param
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     [HttpPost("place-order")]
     public async Task<IActionResult> PlaceOrderAsync(CreateOrder createOrder)
     {
-        
         var customer = await _customerRepository.GetUserFromEmailAsync(createOrder.customerMail);
         if (customer == null) return NotFound("Customer not found.");
-
-        
         var products = await _productRepository.GetAllProductsAsync();
         var selectedProducts = products.Where(p => createOrder.productIds.Contains(p.Id)).ToList();
 
         if (!selectedProducts.Any()) return BadRequest("No valid products selected.");
 
-        // Create and save the order
         var order = new Order
         {
             UserID = customer.UserId,
@@ -91,30 +100,6 @@ public class OrderController : ControllerBase
         await _orderRepository.CreateOrderAsync(order);
 
         return Ok();
-    }
-
-
-    //PUT (uppdatera med API)
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrder(int id, Order order)
-    {
-        await _orderRepository.UpdateOrderAsync(id, order);
-        return Ok();
-    }
-
-    // DELETE (Ta bort med API)
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteOrder(int id)
-    {
-        var category = await _orderRepository.DeleteOrderAsync(id);
-        if (category == true)
-        {
-            return Ok();
-        }
-        else
-        {
-            return NotFound();
-        }
-    }
+    }   
 }
 

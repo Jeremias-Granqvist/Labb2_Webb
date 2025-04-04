@@ -21,6 +21,16 @@ public class CategoryController : ControllerBase
         _categoryService = categoryService;
     }
 
+    /// <summary>
+    /// Get a list of all categories
+    /// </summary>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     //GET (hämta med API)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories()
@@ -33,51 +43,7 @@ public class CategoryController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Log exception
             return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Category>> GetCategory(int id)
-    {
-        var category = await _categoryService.GetCategoryAsync(id);
-
-        return category;
-    }
-
-    //POST (skapa med API)
-    [HttpPost]
-    public async Task<ActionResult<Category>> PostCategory(CategoryDto category)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        var result = await _categoryService.CreateCategoryAsync(category);
-        return Created();
-    }
-
-    //PUT (uppdatera med API)
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutCategory(int id, CategoryDto category)
-    {
-        await _categoryService.UpdateCategoryAsync(id, category);
-        return Ok();
-    }
-
-    // DELETE (Ta bort med API)
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory(int id)
-    {
-        var category = await _categoryService.DeleteCategoryAsync(id);
-        if (category == true)
-        {
-            return Ok();
-        }
-        else
-        {
-            return NotFound();
         }
     }
 }
