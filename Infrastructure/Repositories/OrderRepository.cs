@@ -22,8 +22,7 @@ namespace Labb2_Infrastructure.Repositories
         {
             return await _context.Orders
                 .Include(o => o.User)  // Eagerly load the user
-                .Include(o => o.OrderItems) // Eagerly load OrderItems
-                .ThenInclude(oi => oi.Product)  // Eagerly load the Product for each OrderItem
+                .Include(o => o.Products) // Eagerly load Products
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
@@ -31,6 +30,7 @@ namespace Labb2_Infrastructure.Repositories
         public async Task<Order> CreateOrderAsync(Order order)
         {
             _context.Orders.Add(order);
+            
             await _context.SaveChangesAsync();
             return order;
 
@@ -48,11 +48,11 @@ namespace Labb2_Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<List<Order>> GetAllOrdersAsync()
         {
             return await _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.OrderItems)
+                .Include(o => o.Products)
                 .ToListAsync();
         }
 
@@ -60,7 +60,7 @@ namespace Labb2_Infrastructure.Repositories
         {
             return await _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.OrderItems)
+                .Include(o => o.Products)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
@@ -73,7 +73,7 @@ namespace Labb2_Infrastructure.Repositories
                 return Task.FromResult<Order>(null);
             }
             orderToUpdate.DateOfOrder = order.DateOfOrder;
-            orderToUpdate.OrderItems = order.OrderItems;
+            orderToUpdate.Products = order.Products;
 
             _context.SaveChangesAsync();
 

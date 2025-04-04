@@ -40,14 +40,6 @@ public class CustomerController : ControllerBase
 
     }
 
-    [HttpGet("{email}")]
-    public async Task<IActionResult> GetUserFromEmail(string email)
-    {
-        var result = await _customerRepository.GetUserFromEmailAsync(email);
-        return Ok(result);
-    }
-
-
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUsersWithAddress(int id)
     {

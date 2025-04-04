@@ -28,18 +28,18 @@ public class OrderController : ControllerBase
 
     //GET (hämta med API)
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
+    public async Task<ActionResult<List<Order>>> GetAllOrders()
     {
-        try
-        {
+        //try
+        //{
         var orders = await _orderRepository.GetAllOrdersAsync();
             return Ok(orders);
-        }
-        catch (Exception ex) { 
+        //}
+        //catch (Exception ex) { 
 
 
-            return StatusCode(500, $"internal servier error: {ex.Message}");
-        }
+        //    return StatusCode(500, $"internal servier error: {ex.Message}");
+        //}
     }
 
     [HttpGet("{id}")]
@@ -83,6 +83,7 @@ public class OrderController : ControllerBase
         var order = new Order
         {
             UserID = customer.UserId,
+            User = customer,
             DateOfOrder = DateOnly.FromDateTime(DateTime.Now),
             Products = selectedProducts
         };

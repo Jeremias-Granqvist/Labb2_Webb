@@ -17,7 +17,7 @@ public partial class StoreContext : DbContext
    // public virtual DbSet<Customer> Customers { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
+   // public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<ApplicationUser> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -79,69 +79,68 @@ public partial class StoreContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Status);
 
-            entity.HasOne(d => d.ProductCategory)
-                  .WithMany(p => p.Products)
-                  .HasForeignKey(d => d.CategoryId)
-                  .HasConstraintName("FK_Produkter_Kategorier");
         });
+            //entity.HasOne(d => d.ProductCategory)
+            //      .WithMany(p => p.Products)
+            //      .HasForeignKey(d => d.CategoryId)
+            //      .HasConstraintName("FK_Produkter_Kategorier");
 
 
         //orderitem
-        modelBuilder.Entity<OrderItem>()
-            .HasKey(oi => oi.OrderItemId);
+        //modelBuilder.Entity<OrderItem>()
+        //    .HasKey(oi => oi.OrderItemId);
 
-        modelBuilder.Entity<OrderItem>()
-        .HasOne(oi => oi.Order)  // Each OrderItem belongs to one Order
-        .WithMany(o => o.OrderItems)  // Each Order has many OrderItems
-        .HasForeignKey(oi => oi.OrderId)  // Define the foreign key in OrderItem
-        .OnDelete(DeleteBehavior.Cascade);  // Define how deletes are handled (if needed)
+        //modelBuilder.Entity<OrderItem>()
+        //.HasOne(oi => oi.Order)  // Each OrderItem belongs to one Order
+        //.WithMany(o => o.OrderItems)  // Each Order has many OrderItems
+        //.HasForeignKey(oi => oi.OrderId)  // Define the foreign key in OrderItem
+        //.OnDelete(DeleteBehavior.Cascade);  // Define how deletes are handled (if needed)
 
-        // Configure the relationship between Product and OrderItem
-        modelBuilder.Entity<OrderItem>()
-            .HasOne(oi => oi.Product)  // Each OrderItem belongs to one Product
-            .WithMany(p => p.OrderItems)  // Each Product has many OrderItems
-            .HasForeignKey(oi => oi.ProductId)  // Define the foreign key in OrderItem
-            .OnDelete(DeleteBehavior.Restrict);  // You can define the delete behavior as
+        //// Configure the relationship between Product and OrderItem
+        //modelBuilder.Entity<OrderItem>()
+        //    .HasOne(oi => oi.Product)  // Each OrderItem belongs to one Product
+        //    .WithMany(p => p.OrderItems)  // Each Product has many OrderItems
+        //    .HasForeignKey(oi => oi.ProductId)  // Define the foreign key in OrderItem
+        //    .OnDelete(DeleteBehavior.Restrict);  // You can define the delete behavior as
 
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.Quantity);
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.Price);
+        //modelBuilder.Entity<OrderItem>()
+        //    .Property(oi => oi.Quantity);
+        //modelBuilder.Entity<OrderItem>()
+        //    .Property(oi => oi.Price);
 
-        //customer
-        //modelBuilder.Entity<Customer>(entity =>
-        //{
-        //    entity.HasKey(e => e.CustomerId).HasName("PK_Customers");
-        //    entity.Property(e => e.CustomerId)
-        //    .ValueGeneratedOnAdd()
-        //    .HasColumnName("CustomerId");
 
-        //    entity.Property(e => e.AdressId).HasColumnName("AdressID");
-        //    entity.Property((e => e.Email)).HasMaxLength(50);
-        //    entity.Property((e => e.Firstname)).HasMaxLength(50);
-        //    entity.Property((e => e.Lastname)).HasMaxLength(50);
-
-        //    entity.HasOne(d => d.Adress);
-
-        //    entity.HasMany(c => c.Orders)
-        //    .WithOne(o => o.User)
-        //    .HasForeignKey(o => o.CustomerId)
-        //    .OnDelete(DeleteBehavior.SetNull);
-    
-        //});
-        
         //order
+        modelBuilder.Entity<Product>()
+            .HasKey(p => p.Id);
+        modelBuilder.Entity<Order>().HasKey(o => o.OrderId);
+
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.Products)
+            .WithMany(p => p.Orders)
+                .UsingEntity<OrderProduct>(
+        j => j.HasOne(op => op.Product).WithMany(p => p.OrderProducts).HasForeignKey(op => op.ProductId),
+        j => j.HasOne(op => op.Order).WithMany(o => o.OrderProducts).HasForeignKey(op => op.OrderId),
+        j =>
+        {
+            j.HasKey(op => new { op.OrderId, op.ProductId });
+        });
+
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(o => o.OrderId);
+            entity.Property(o => o.OrderId)
+                .ValueGeneratedOnAdd();
 
             entity.HasOne(o => o.User)
-            .WithMany(c => c.Orders)
-            .HasForeignKey(o => o.UserID)
-            .OnDelete(DeleteBehavior.SetNull);
+                .WithMany(c => c.Orders)
+                .HasForeignKey(o => o.UserID)  // Ensure this matches the correct column in the database
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(o => o.DateOfOrder).IsRequired();
         });
+
+        
 
         modelBuilder.Entity<Adress>(entity =>
         {

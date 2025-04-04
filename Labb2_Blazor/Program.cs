@@ -50,7 +50,7 @@ builder.Services.AddScoped(typeof(IRepositoryService<>), typeof(RepositoryServic
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IOrderitemService, OrderItemService>();
+//builder.Services.AddScoped<IOrderitemService, OrderItemService>();
 builder.Services.AddScoped<IAdressService, AdressService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>();

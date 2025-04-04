@@ -57,13 +57,15 @@ namespace Labb2_Infrastructure.Services
             return result;
         }
 
-        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        public async Task<ApplicationUserDTO> GetUserByEmailAsync(string email)
         {
             try
             {
-            var response = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{email}");
-
-            return response;
+                var tempCust = await _httpClient.GetFromJsonAsync<IEnumerable<ApplicationUser>>($"api/customer");
+                var custID = tempCust.FirstOrDefault(c => c.Email == email).UserId;
+            var response = await _httpClient.GetFromJsonAsync<ApplicationUser>($"api/customer/{custID}");
+                
+            return AutoMapper<ApplicationUser, ApplicationUserDTO>.Map(response) ;
 
             }
             catch (Exception ex)

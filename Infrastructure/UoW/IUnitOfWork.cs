@@ -13,7 +13,7 @@ namespace Labb2_Infrastructure.UoW
         IOrderRepository Orders { get; }
         ICustomerRepository Customers { get; }
         IAdressRepository Adress { get; }
-        IOrderitemRepository OrderItem { get; }
+        //IOrderitemRepository OrderItem { get; }
         
         Task<int> CompleteAsync();
     }

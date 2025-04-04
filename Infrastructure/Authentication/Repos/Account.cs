@@ -64,8 +64,10 @@ namespace Labb2_Infrastructure.Authentication.Repos
             _context.Users.Add(
                 new ApplicationUser()
                 {
-                    FirstName = model.Name,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
                     Email = model.Email,
+                    PhoneNumber = model.PhoneNo,
                     Role = model.Role,
                     Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
                 });

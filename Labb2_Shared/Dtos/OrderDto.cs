@@ -12,6 +12,6 @@ namespace Labb2_Shared.Dtos
         public int OrderId { get; set; }
         public int? UserID { get; set; }
         public DateOnly DateOfOrder { get; set; }
-        public virtual ICollection<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
+        //public virtual ICollection<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
     }
 }

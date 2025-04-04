@@ -35,16 +35,15 @@ public class ProductController : ControllerBase
 
     //POST (skapa med API)
     [HttpPost]
-    //[Authorize]
-    public async Task<ActionResult<Product>> CreateProduct([FromBody]ProductDto product)
+    [Route("/create-product")]
+    public async Task<ActionResult> CreateProduct(Product product)
     {
-         var result = AutoMapper<ProductDto, Product>.Map(product);
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        await _productRepository.CreateProductAsync(result);
-        return Created();
+        await _productRepository.CreateProductAsync(product);
+        return Ok();
     }
 
     //PUT (uppdatera med API)

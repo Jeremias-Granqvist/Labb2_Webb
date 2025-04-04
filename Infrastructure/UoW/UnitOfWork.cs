@@ -16,7 +16,7 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Orders { get; }
     public ICustomerRepository Customers { get; }
     public IAdressRepository Adress { get; }
-    public IOrderitemRepository OrderItem { get; }
+    //public IOrderitemRepository OrderItem { get; }
 
     public UnitOfWork()
     {
@@ -26,7 +26,7 @@ public class UnitOfWork : IUnitOfWork
         Orders = new OrderRepository(_context);
         Customers = new CustomerRepository(_context);
         Adress = new AdressRepository(_context);
-        OrderItem = new OrderItemRepository(_context);
+        //OrderItem = new OrderItemRepository(_context);
     }
 
     public async Task<int> CompleteAsync()

@@ -1,9 +1,10 @@
 ﻿@page "/addproduct"
 @rendermode InteractiveServer
 @using Labb2_Blazor.Dto;
+@using Labb2_Shared.Interfaces
+@inject IProductService _productService
 
-<AuthorizeView Roles="Admin" Context="authContext">
-    <Authorized>
+@if(_IsAuthorized){
 <PageTitle>Add Product</PageTitle>
 <h3>Add Product</h3>
 
@@ -61,12 +62,11 @@ OnValidSubmit="@ValidInput">
 		</div>
 	</div>
 </EditForm>
-	</Authorized>
-	<NotAuthorized>
+}
+else{
 		<p>I don't know how you got here, but you shouldn't see this.</p>
-	</NotAuthorized>
-</AuthorizeView>
 
+}
 @if(!isProductSaved)
 {
 

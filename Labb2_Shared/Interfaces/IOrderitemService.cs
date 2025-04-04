@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Labb2_Shared.Interfaces
 {
-    public interface IOrderitemService
-    {
-        Task<OrderItem> CreateOrderItemAsync(OrderItemDto itemdto);
-        Task<List<OrderItemDto>> GetAllOrdersItemAsync();
-        Task<OrderItemDto> GetOrderItemByIdAsync(int id);
+    //public interface IOrderitemService
+    //{
+    //    Task<OrderItem> CreateOrderItemAsync(OrderItemDto itemdto);
+    //    Task<List<OrderItemDto>> GetAllOrdersItemAsync();
+    //    Task<OrderItemDto> GetOrderItemByIdAsync(int id);
 
-        Task<bool> DeleteOrderItemAsync(int id);
+    //    Task<bool> DeleteOrderItemAsync(int id);
 
-        Task<bool> UpdateOrderItemAsync(int id, OrderItemDto orderItemDto);
-    }
+    //    Task<bool> UpdateOrderItemAsync(int id, OrderItemDto orderItemDto);
+    //}
 }

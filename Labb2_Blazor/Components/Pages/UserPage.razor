@@ -5,7 +5,9 @@
 @using Blazored.LocalStorage;
 @inject ILocalStorageService localStorage
 @inject ICustomerService customerService
+@inject IAdressService adressService
 @inject IAccountService accountService
+@inject IOrderService orderService
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider customAuthStateProvider
 <h3>UserPage</h3>
@@ -18,25 +20,25 @@ else
 {
     <div>
         <h4>User Information</h4>
-        <p><strong>FirstName:</strong> @user.FirstName</p>
-        <p><strong>LastName:</strong> @user.LastName</p>
-        <p><strong>Email:</strong> @user.Email</p>
-        <p><strong>Email:</strong> @user.PhoneNumber</p>
-        <h4>Adress Information</h4>
+        <p><strong>FirstName:</strong> <input type="text" @bind="@user.Firstname" /></p>
+        <p><strong>LastName:</strong> <input type="text" @bind="@user.Lastname" /></p>
+        <p><strong>Email:</strong> <input type="email" @bind="@user.Email" /></p>
+        <p><strong>Phone Number:</strong> <input type="tel" @bind="@user.PhoneNo" /></p>
 
-        <p><strong>Street:</strong> @user.Adress.StreetName</p>
-        <p><strong>City:</strong> @user.Adress.City</p>
-        <p><strong>>Zipcode:</strong> @user.Adress.ZipCode</p>
-        <p><strong>Country:</strong> @user.Adress.Country</p>
-        
+        <h4>Address Information</h4>
+        <p><strong>Street:</strong> <input type="text" @bind="@user.Adress.StreetName" /></p>
+        <p><strong>City:</strong> <input type="text" @bind="@user.Adress.City" /></p>
+        <p><strong>Zipcode:</strong> <input type="text" @bind="@user.Adress.ZipCode" /></p>
+        <p><strong>Country:</strong> <input type="text" @bind="@user.Adress.Country" /></p>
 
+        <button class ="btn btn-primary mt-2" @onclick ="UpdateCustomer" id="updateButton">Update Information</button>
         <h4>Orders</h4>
         @if (orders != null && orders.Any())
         {
             <ul>
                 @foreach (var order in orders)
                 {
-                    <li>Order ID: @order.OrderId, Date: @order.OrderId, Total: @order.DateOfOrder</li>
+                    <li>Order ID: @order.OrderId, Date: @order.DateOfOrder, Total: @order.DateOfOrder</li>
                 }
             </ul>
         }

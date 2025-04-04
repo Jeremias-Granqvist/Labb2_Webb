@@ -1,4 +1,5 @@
 using Labb2_Infrastructure.Authentication.Services;
+using Labb2_Shared.Dtos;
 using Labb2_Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -8,8 +9,8 @@ namespace Labb2_Blazor.Components.Pages
 {
     public partial class UserPage
     {
-        private ApplicationUser user;
-        private List<Order> orders;
+        private ApplicationUserDTO user;
+        private List<OrderDto> orders;
         private bool isInitialized = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -19,7 +20,6 @@ namespace Labb2_Blazor.Components.Pages
                 var authToken = await localStorage.GetItemAsync<string>("authToken");
                 if (string.IsNullOrEmpty(authToken))
                 {
-                    // Redirect to login if the user is not authenticated
                     navigationManager.NavigateTo("/login");
                     return;
                 }
@@ -62,12 +62,18 @@ namespace Labb2_Blazor.Components.Pages
             {
                 var userName = currentUser.Identity.Name;
                 user = await customerService.GetUserByEmailAsync(userName);
-              //  user = await customerService.GetUsersWithOrdersAsync(user.UserId);
+                var tempOrders = await orderService.GetAllOrdersAsync();
+                orders = tempOrders.Where(o => o.UserID == user.UserId).ToList();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching user data: {ex.Message}");
             }
+        }
+
+        private async void UpdateCustomer()
+        {
+            var response = await customerService.UpdateUserAsync(user.UserId, user);
         }
     }
 }

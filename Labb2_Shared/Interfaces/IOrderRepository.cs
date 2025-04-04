@@ -12,7 +12,7 @@ namespace Labb2_Shared.Interfaces
         Task<Order> GetOrderWithCustomerAndItemsAsync(int orderId);
 
         Task<Order> CreateOrderAsync(Order order);
-        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<List<Order>> GetAllOrdersAsync();
         Task<Order> GetOrderByIdAsync(int id);
         Task<bool> DeleteOrderAsync(int id);
         Task<Order> UpdateOrderAsync(int id, Order order);
