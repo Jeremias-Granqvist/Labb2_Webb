@@ -73,21 +73,26 @@ namespace Labb2_Infrastructure.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public Task<ApplicationUser> UpdateUserAsync(int id, ApplicationUser user)
+        public async Task<ApplicationUser> UpdateUserAsync(int id, ApplicationUser user)
         {
             var userToUpdate = _context.Users.FirstOrDefault(u => u.UserId == id);
-
+            var adressUpdate = _context.Adresses.FirstOrDefault(a => a.AdressId == user.AddressId);
             if (userToUpdate == null)
             {
-                return Task.FromResult<ApplicationUser>(null);
+                return await Task.FromResult<ApplicationUser>(null);
             }
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
             userToUpdate.Email = user.Email;
             userToUpdate.PhoneNumber= user.PhoneNumber;
+            adressUpdate.StreetName = user.Adress.StreetName;
+            adressUpdate.ZipCode = user.Adress.ZipCode;
+            adressUpdate.City = user.Adress.City;
+            adressUpdate.Country = user.Adress.Country;
+            userToUpdate.Adress = adressUpdate;
 
-            _context.SaveChangesAsync();
-            return Task.FromResult(userToUpdate);
+            await _context.SaveChangesAsync();
+            return userToUpdate;
         }
     }
 }

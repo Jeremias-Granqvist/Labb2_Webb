@@ -1,4 +1,6 @@
-﻿namespace Labb2_Shared.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Labb2_Shared.Models
 {
     public class Product
     {
@@ -6,10 +8,13 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public int Price { get; set; }
-        public Category ProductCategory { get; set; }
         public int CategoryId { get; set; }
         public bool Status { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        [JsonIgnore]
+        public virtual List<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+        [JsonIgnore]
+        public virtual List<Order> Orders { get; set; } = new List<Order>();
     }
+    //public Category ProductCategory { get; set; }
+    //public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }

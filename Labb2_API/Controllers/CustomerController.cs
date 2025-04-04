@@ -23,31 +23,44 @@ public class CustomerController : ControllerBase
         _customerRepository = customerRepository;
     }
 
+    /// <summary>
+    /// Get a list of all customers
+    /// </summary>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     // GET (hämta med API)
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ApplicationUserDTO>>> GetAllUsers()
     {
-        
         var customers = await _customerRepository.GetAllUserAsync();
         return Ok(customers);
     }
 
-    [HttpGet("{id}/orders")]
-    public async Task<IActionResult> GetUsersWithOrders(int id)
-    {
-        var result = _customerRepository.GetUsersWithOrdersAsync(id);
-        return Ok(result);
 
-    }
+    //[HttpGet("{id}/orders")]
+    //public async Task<IActionResult> GetUsersWithOrders(int id)
+    //{
+    //    var result = _customerRepository.GetUsersWithOrdersAsync(id);
+    //    return Ok(result);
 
-    [HttpGet("{email}")]
-    public async Task<IActionResult> GetUserFromEmail(string email)
-    {
-        var result = await _customerRepository.GetUserFromEmailAsync(email);
-        return Ok(result);
-    }
+    //}
 
-
+    /// <summary>
+    /// Get specific user from userID
+    /// </summary>
+    /// <param name="id">The ID of the user to retrieve from the database.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUsersWithAddress(int id)
     {
@@ -59,6 +72,17 @@ public class CustomerController : ControllerBase
         return Ok(customer);
     }
 
+    /// <summary>
+    /// Create new user and save to DB.
+    /// </summary>
+    /// <param name="customer">The `ApplicationUser` object containing the details of the user to be created, such as name, email, etc.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     // POST (skapa med API)
     [HttpPost]
     public async Task<ActionResult<ApplicationUser>> CreateUser(ApplicationUser customer)
@@ -78,6 +102,18 @@ public class CustomerController : ControllerBase
         return CreatedAtAction(nameof(GetUsersWithAddress), new { id = createdCustomer.UserId }, createdCustomer);
     }
 
+    /// <summary>
+    /// updates customer information in database
+    /// </summary>
+    /// <param name="id">The ID of the user to update.</param>
+    /// <param name="customer">The `ApplicationUser` object containing the updated user information.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    
     // PUT (uppdatera med API)
     [HttpPut("{id}")]
     public async Task<IActionResult> PutUser(int id, ApplicationUser customer)
@@ -89,20 +125,5 @@ public class CustomerController : ControllerBase
         }
 
         return Ok();
-    }
-
-    // DELETE (Ta bort med API)
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(int id)
-    {
-        var success = await _customerRepository.DeleteUserAsync(id);
-        if (success)
-        {
-            return Ok();
-        }
-        else
-        {
-            return NotFound();
-        }
     }
 }

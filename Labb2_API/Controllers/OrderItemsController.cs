@@ -9,69 +9,69 @@ using Microsoft.AspNetCore.Mvc;
 namespace Labb2_API.Controllers
 {
 
-    [Route("api/[controller]")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[ApiController]
 
-    public class OrderItemsController : ControllerBase
-    {
-        private readonly IOrderitemService _repository;
-        public OrderItemsController(IOrderitemService repo)
-        {
-            _repository = repo;
-        }
+    //public class OrderItemsController : ControllerBase
+    //{
+    //    private readonly IOrderitemService _repository;
+    //    public OrderItemsController(IOrderitemService repo)
+    //    {
+    //        _repository = repo;
+    //    }
 
-        //GET (hämta med API)
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderItemDto>>> GetAllOrderItems()
-        {
-            try
-            {
-                var orders = await _repository.GetAllOrdersItemAsync();
-                return Ok(orders);
-            }
-            catch (Exception ex)
-            {
-
-
-                return StatusCode(500, $"internal servier error: {ex.Message}");
-            }
-        }
+    //    //GET (hämta med API)
+    //    [HttpGet]
+    //    public async Task<ActionResult<IEnumerable<OrderItemDto>>> GetAllOrderItems()
+    //    {
+    //        try
+    //        {
+    //            var orders = await _repository.GetAllOrdersItemAsync();
+    //            return Ok(orders);
+    //        }
+    //        catch (Exception ex)
+    //        {
 
 
-        //POST (skapa med API)
-        [HttpPost]
-        public async Task<ActionResult<OrderItem>> PostOrderItem(OrderItemDto orderItemDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _repository.CreateOrderItemAsync(orderItemDto);
-            return Created();
-        }
+    //            return StatusCode(500, $"internal servier error: {ex.Message}");
+    //        }
+    //    }
 
-        //PUT (uppdatera med API)
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderItem(int id, OrderItemDto order)
-        {
-            await _repository.UpdateOrderItemAsync(id, order);
-            return Ok();
-        }
 
-        // DELETE (Ta bort med API)
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrderItem(int id)
-        {
-            var category = await _repository.DeleteOrderItemAsync(id);
-            if (category == true)
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+    //    //POST (skapa med API)
+    //    [HttpPost]
+    //    public async Task<ActionResult<OrderItem>> PostOrderItem(OrderItemDto orderItemDto)
+    //    {
+    //        if (!ModelState.IsValid)
+    //        {
+    //            return BadRequest(ModelState);
+    //        }
+    //        var result = await _repository.CreateOrderItemAsync(orderItemDto);
+    //        return Created();
+    //    }
 
-    }
+    //    //PUT (uppdatera med API)
+    //    [HttpPut("{id}")]
+    //    public async Task<IActionResult> PutOrderItem(int id, OrderItemDto order)
+    //    {
+    //        await _repository.UpdateOrderItemAsync(id, order);
+    //        return Ok();
+    //    }
+
+    //    // DELETE (Ta bort med API)
+    //    [HttpDelete("{id}")]
+    //    public async Task<IActionResult> DeleteOrderItem(int id)
+    //    {
+    //        var category = await _repository.DeleteOrderItemAsync(id);
+    //        if (category == true)
+    //        {
+    //            return Ok();
+    //        }
+    //        else
+    //        {
+    //            return NotFound();
+    //        }
+    //    }
+
+    //}
 }

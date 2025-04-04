@@ -1,8 +1,5 @@
-using Labb2_API;
-using Labb2_API.Controllers;
 using Labb2_Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Labb2_Shared.Interfaces;
 using Labb2_Infrastructure.Repositories;
 using Labb2_Infrastructure.Services;
@@ -14,6 +11,7 @@ using Labb2_Infrastructure.Authentication.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Labb2_Infrastructure.Authentication.States;
 using Labb2_Infrastructure.UoW;
+using System.Reflection;
 
 
 
@@ -26,8 +24,6 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
         .LogTo(Console.WriteLine, LogLevel.Information));
 
 
-
-
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -35,7 +31,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "My API", Version = "v1" });
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
     });
 
 builder.Services.AddAuthentication(options =>
@@ -74,8 +72,8 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderitemService, OrderItemService>();
-builder.Services.AddScoped<IOrderitemRepository, OrderItemRepository>();
+//builder.Services.AddScoped<IOrderitemService, OrderItemService>();
+//builder.Services.AddScoped<IOrderitemRepository, OrderItemRepository>();
 builder.Services.AddScoped<IAdressService, AdressService>();
 builder.Services.AddScoped<IAdressRepository, AdressRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();

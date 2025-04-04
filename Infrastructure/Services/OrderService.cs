@@ -3,6 +3,7 @@ using Labb2_Infrastructure.UoW;
 using Labb2_Shared.Dtos;
 using Labb2_Shared.Interfaces;
 using Labb2_Shared.Models;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,9 @@ namespace Labb2_Infrastructure.Services
     public class OrderService : IOrderService
     {
         private readonly HttpClient _httpClient;
-        private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-        public OrderService(IHttpClientFactory clientFactory, IUnitOfWorkFactory unitOfWorkFactory)
+        public OrderService(IHttpClientFactory clientFactory )
         {
             _httpClient = clientFactory.CreateClient("Api");
-            _unitOfWorkFactory = unitOfWorkFactory;
         }
 
         public async Task<bool> PlaceOrderAsync(string customerMail, List<int> productIds)
@@ -30,6 +29,7 @@ namespace Labb2_Infrastructure.Services
                 customerMail = customerMail,
                 productIds = productIds
             };
+
             var response = await _httpClient.PostAsJsonAsync("api/order/place-order", request);
 
             if (response.IsSuccessStatusCode)
@@ -41,25 +41,6 @@ namespace Labb2_Infrastructure.Services
                 Console.WriteLine($"error placing order {response.StatusCode}");
                 return false;
             }
-                //using (var _unitOfWork = _unitOfWorkFactory.Create()) { 
-                //var customer = await _unitOfWork.Customers.GetUserFromEmailAsync(customerMail);
-                //if (customer == null) return false;
-
-                //var products = await _unitOfWork.Products.GetAllProductsAsync();
-                //var selectedProducts = products.Where(p => productIds.Contains(p.Id)).ToList();
-
-                //if (!selectedProducts.Any()) return false;
-
-                //var order = new Order
-                //{
-                //    UserID = customer.UserId,
-                //    DateOfOrder = DateOnly.FromDateTime(DateTime.Now),
-                //    Products = selectedProducts 
-                //};
-
-                //await _unitOfWork.CompleteAsync();
-                //return true;
-                //}
         }
 
         public async Task<Order> CreateOrderAsync(OrderDto orderDto)
@@ -84,9 +65,18 @@ namespace Labb2_Infrastructure.Services
 
         public async Task<List<OrderDto>> GetAllOrdersAsync()
         {
-            var list = await _httpClient.GetFromJsonAsync<IEnumerable<Order>>("api/order");
+            try
+            {
+
+            var list = await _httpClient.GetFromJsonAsync<List<Order>>("api/order");
             var changedList = AutoMapper<Order, OrderDto>.MapListIenum(list);
             return changedList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR I SERVICE: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<OrderDto> GetOrderByIdAsync(int id)

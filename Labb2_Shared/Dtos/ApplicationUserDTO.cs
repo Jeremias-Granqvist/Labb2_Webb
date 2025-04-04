@@ -10,7 +10,7 @@ namespace Labb2_Shared.Dtos
         public string? Email { get; set; } // Map this to ApplicationUser.Email
         public string? PhoneNo { get; set; } // Map this to ApplicationUser.PhoneNumber
         public int? AdressId { get; set; } // Map this to ApplicationUser.AddressId
-        public virtual AdressDto? Adress { get; set; } // Adress mapping (from ApplicationUser.Adress)
+        public virtual Adress? Adress { get; set; } // Adress mapping (from ApplicationUser.Adress)
         public virtual ICollection<OrderDto> Orders { get; set; } = new List<OrderDto>(); // Orders mapping (from ApplicationUser.Orders)
     }
 }

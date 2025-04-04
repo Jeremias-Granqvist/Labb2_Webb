@@ -21,10 +21,24 @@ namespace Labb2_Infrastructure.Repositories
 
         public async Task<Product> CreateProductAsync(Product product)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Products.Add(product);
+                var result = await _context.SaveChangesAsync();
 
-            return product;
+                if (result == 0)
+                {
+                    // Log or throw if no rows are affected
+                    throw new Exception("Product not saved to the database.");
+                }
+
+                return product;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here or handle accordingly
+                throw new Exception($"Error saving product: {ex.Message}");
+            }
         }
         public async Task<bool> DeleteProductAsync(int id)
         {
@@ -68,7 +82,7 @@ namespace Labb2_Infrastructure.Repositories
             productToUpdate.Name = product.Name;
             productToUpdate.Description = product.Description;
             productToUpdate.Price = product.Price;
-            productToUpdate.ProductCategory = product.ProductCategory;
+            //productToUpdate.ProductCategory = product.ProductCategory;
             productToUpdate.Status= product.Status;
             productToUpdate.CategoryId = product.CategoryId;
 

@@ -29,6 +29,7 @@ namespace Labb2_Blazor.Components.Pages
         protected string message = string.Empty;
         protected string statusClass = string.Empty;
         protected bool isProductSaved { get; set; }
+        private bool _IsAuthorized = false;
 
 
         protected override async Task OnInitializedAsync()
@@ -40,6 +41,7 @@ namespace Labb2_Blazor.Components.Pages
             }
             else
             {
+                _IsAuthorized = true;
                 _httpClient = HttpClientFactory.CreateClient("Api");
 
                 _httpClient.DefaultRequestHeaders.Authorization =
@@ -77,11 +79,11 @@ namespace Labb2_Blazor.Components.Pages
             StateHasChanged();
         }
         
-        private async Task ValidInput()
+        public async Task ValidInput()
         {
-            var response = await _httpClient.PostAsJsonAsync("api/product", Product);
-            if (response.IsSuccessStatusCode)
-            {
+            var response = await _productService.CreateProductAsync(Product);
+            //var response = await _httpClient.PostAsJsonAsync("api/product", Product);
+
             statusClass = "alert-success";
             message = "Product added to database";
             isProductSaved = true;
@@ -90,4 +92,3 @@ namespace Labb2_Blazor.Components.Pages
 
 
     }
-}

@@ -21,7 +21,10 @@ public class ProductController : ControllerBase
         _productRepository = productRepo;
     }
 
-
+    /// <summary>
+    /// returns a list of all products
+    /// </summary>
+    /// <returns>200 = returns a list of all products currently in the database.</returns>
     //GET (hämta med API)
     [HttpGet]
     [AllowAnonymous]
@@ -32,21 +35,32 @@ public class ProductController : ControllerBase
     }
 
 
-
+    /// <summary>
+    /// Adds new product to database.
+    /// </summary>
+    /// <param name="product">The product object to be added to the database. This contains product details such as name, price, description, etc.</param>
+    /// <returns>200 = new product added to database</returns>
     //POST (skapa med API)
     [HttpPost]
-    //[Authorize]
-    public async Task<ActionResult<Product>> CreateProduct([FromBody]ProductDto product)
+    [Route("/create-product")]
+    public async Task<ActionResult> CreateProduct(Product product)
     {
-         var result = AutoMapper<ProductDto, Product>.Map(product);
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        await _productRepository.CreateProductAsync(result);
-        return Created();
+        await _productRepository.CreateProductAsync(product);
+        return Ok();
     }
 
+
+    /// <summary>
+    /// Updates product in database.
+    /// </summary>
+    /// <param name="id">The ID of the product to be updated. This ID is used to find the product in the database.</param>
+    /// <param name="product">The product object containing updated details (such as name, price, etc.) to replace the existing product data.</param>
+    /// <returns>
+    /// <returns>200 = product was updated.</returns>
     //PUT (uppdatera med API)
     [HttpPut("{id}")]
     public async Task<IActionResult> PutProduct(int id, [FromBody] Product product)
@@ -71,7 +85,17 @@ public class ProductController : ControllerBase
         return Ok();
     }
 
-    // DELETE (Ta bort med API)
+    /// <summary>
+    /// deletes product with specified ID
+    /// </summary>
+    /// <param name="id">The ID of the product to be deleted. This ID is used to find and remove the product from the database.</param>
+    /// <returns>
+    ///     HTTP 200 OK: The request was successful and the response contains the requested data.
+    ///     HTTP 201 Created: The request was successful and a new resource has been created.
+    ///     HTTP 400 Bad Request: The request was invalid. Please check the request body or query parameters.
+    ///     HTTP 404 Not Found: The requested resource was not found on the server.
+    ///     HTTP 500 Internal Server Error: An unexpected error occurred on the server. Please try again later.
+    /// </returns>    // DELETE (Ta bort med API)
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {

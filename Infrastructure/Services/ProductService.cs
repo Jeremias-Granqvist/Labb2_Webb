@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
+using System.Threading.Channels;
 
 namespace Labb2_Infrastructure.Services
 {
@@ -27,14 +28,17 @@ namespace Labb2_Infrastructure.Services
         public async Task<Product> CreateProductAsync(ProductDto productDto)
         {
             var product = AutoMapper<ProductDto, Product>.Map(productDto);
-
-            var response = await _httpClient.PostAsJsonAsync("api/product", product);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return await response.Content.ReadFromJsonAsync<Product>();
+            var response = await _httpClient.PostAsJsonAsync("/create-product", product);
+                return product;
             }
-            return null;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR : { ex.Message}");
+                throw;
+            }
+
 
         }
 

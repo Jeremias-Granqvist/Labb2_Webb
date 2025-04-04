@@ -13,7 +13,7 @@ namespace Labb2_Shared.Interfaces
         Task<ApplicationUser> CreateUserAsync(ApplicationUserDTO customerDto);
         Task<List<ApplicationUserDTO>> GetAllUsersAsync();
         Task<ApplicationUserDTO> GetUsersByIdAsync(int id);
-        Task<ApplicationUser> GetUserByEmailAsync(string email);
+        Task<ApplicationUserDTO> GetUserByEmailAsync(string email);
         Task<ApplicationUser> GetUsersWithAdressAsync(int customerId);
         Task<ApplicationUser> GetUsersWithOrdersAsync(int customerId);
         Task<bool> DeleteUserAsync(int id);
