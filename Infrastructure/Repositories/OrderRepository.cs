@@ -1,6 +1,7 @@
 ﻿using Labb2_Shared.Interfaces;
 using Labb2_Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace Labb2_Infrastructure.Repositories
 
         public async Task<Order> CreateOrderAsync(Order order)
         {
+            foreach (var product in order.Products)
+            {
+                _context.Attach(product);
+            }
             _context.Orders.Add(order);
             
             await _context.SaveChangesAsync();

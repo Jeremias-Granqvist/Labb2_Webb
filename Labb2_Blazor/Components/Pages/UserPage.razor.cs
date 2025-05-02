@@ -26,6 +26,10 @@ namespace Labb2_Blazor.Components.Pages
 
                 // Fetch user data and orders after checking the auth token
                 await LoadUserData();
+                if (user.Adress == null)
+                {
+                    user.Adress = new Adress();
+                }
                 isInitialized = true; // Set initialization flag to true
                 StateHasChanged(); // Trigger a re-render to show the content
             }

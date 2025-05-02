@@ -17,4 +17,12 @@ namespace Labb2_Shared.Models
     }
     //public Category ProductCategory { get; set; }
     //public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+    public class Reviews
+    {
+        public int Rating { get; set; }
+        public string Review { get; set; }
+    }
+
+
 }

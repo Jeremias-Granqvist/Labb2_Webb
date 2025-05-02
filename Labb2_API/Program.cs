@@ -31,9 +31,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
     {
+        c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "My API",
+            Version = "V1",
+            Description = "An API to make calls needed for this climbing store it's users and orders",
+            Contact = new Microsoft.OpenApi.Models.OpenApiContact
+            {
+                Name = "Jeremias",
+                Email = "Jeremias.Granqvist@iths.se"
+            },
+            License = new Microsoft.OpenApi.Models.OpenApiLicense
+            {
+                Name = "MIT License",
+                Url = new Uri("https://opensource.org/licenses/MIT")
+            }
+            });
+
         var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        if (File.Exists(xmlPath))
+        {
         c.IncludeXmlComments(xmlPath);
+        }
     });
 
 builder.Services.AddAuthentication(options =>

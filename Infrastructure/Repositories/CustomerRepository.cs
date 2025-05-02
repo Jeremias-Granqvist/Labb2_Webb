@@ -85,11 +85,26 @@ namespace Labb2_Infrastructure.Repositories
             userToUpdate.LastName = user.LastName;
             userToUpdate.Email = user.Email;
             userToUpdate.PhoneNumber= user.PhoneNumber;
-            adressUpdate.StreetName = user.Adress.StreetName;
+            if (adressUpdate == null)
+            {
+                var newAdress = new Adress
+                {
+                    StreetName = user.Adress.StreetName,
+                    City = user.Adress.City,
+                    ZipCode = user.Adress.ZipCode,
+                    Country = user.Adress.Country
+                };
+                _context.Adresses.Add(newAdress);
+                adressUpdate = newAdress;
+            }
+            else
+            {
+                adressUpdate.StreetName = user.Adress.StreetName;
             adressUpdate.ZipCode = user.Adress.ZipCode;
             adressUpdate.City = user.Adress.City;
             adressUpdate.Country = user.Adress.Country;
             userToUpdate.Adress = adressUpdate;
+            }
 
             await _context.SaveChangesAsync();
             return userToUpdate;
