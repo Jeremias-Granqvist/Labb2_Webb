@@ -440,7 +440,12 @@ input data:
 ---
 
 ### Error codes and responses
-404: Not Found - The resource was not found.
-400: Bad Request - Invalid parameters or missing required fields.
-500: Internal Server Error - If something goes wrong on the server side.
+**Responses**
+|Code| Description| Example response|
+|------|-------------|-----------------------------------------------------|
+| 404 | Not Found | The resource was not found. |
+| 400 | Bad Request | Invalid parameters or missing required fields. |
+| 500 | Internal Server Error | If something goes wrong on the server side. |
 
+
+---
